@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional, Tuple
 from sqlalchemy.orm import Session
 from app.models.payment import Payment, Refund, PaymentStatus
 from app.models.booking import Reservation, ReservationStatus, Booking
-from app.services.booking_service import BookingService
+from app.services.booking_service import BookingService, ensure_utc
 from app.integrations.razorpay import razorpay_client
 from app.integrations.email import email_service
 from app.core.config import settings
@@ -27,7 +27,7 @@ class PaymentService:
             raise ValueError("Reservation does not belong to the authenticated user.")
 
         now = datetime.now(timezone.utc)
-        if reservation.status != ReservationStatus.PENDING or reservation.expires_at < now:
+        if reservation.status != ReservationStatus.PENDING or ensure_utc(reservation.expires_at) < now:
             raise ValueError("Reservation has expired or is no longer pending.")
 
         # Calculate subtotal

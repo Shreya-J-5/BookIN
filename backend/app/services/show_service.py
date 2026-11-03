@@ -123,13 +123,17 @@ class ShowService:
 
         if date_filter:
             # Match date of start_time
+            now = datetime.now(timezone.utc)
             start_of_day = datetime.combine(date_filter, datetime.min.time(), tzinfo=timezone.utc)
             end_of_day = datetime.combine(date_filter, datetime.max.time(), tzinfo=timezone.utc)
-            query = query.filter(Show.start_time >= start_of_day, Show.start_time <= end_of_day)
+            if date_filter == now.date():
+                query = query.filter(Show.start_time > now, Show.start_time <= end_of_day)
+            else:
+                query = query.filter(Show.start_time >= start_of_day, Show.start_time <= end_of_day)
         else:
-            # Future shows
+            # Future upcoming shows
             now = datetime.now(timezone.utc)
-            query = query.filter(Show.end_time > now)
+            query = query.filter(Show.start_time > now)
 
         return query.order_by(Show.start_time).all()
 

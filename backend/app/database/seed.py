@@ -226,11 +226,13 @@ def seed_database():
                     # Assign a movie to this screen based on screen name / index
                     chosen_movie = seeded_movies[hash(s_name) % len(seeded_movies)]
 
-                    for day_offset in [0, 1, 2]:
+                    for day_offset in [0, 1, 2, 3]:
                         for hr, mn in show_slots:
                             show_time = (now + timedelta(days=day_offset)).replace(
                                 hour=hr, minute=mn, second=0, microsecond=0
                             )
+                            if show_time <= now:
+                                continue  # Do not schedule past shows
                             existing_show = db.query(Show).filter(
                                 Show.screen_id == screen.id,
                                 Show.start_time == show_time

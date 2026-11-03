@@ -5,13 +5,22 @@ from app.database.connection import SessionLocal
 from app.services.booking_service import BookingService
 from app.services.auth_service import AuthService
 from app.models.show import Show, ShowSeat, ShowSeatStatus
+from datetime import datetime, timezone, timedelta
 
 
 def test_concurrent_seat_reservation_prevents_double_booking():
     # Setup test show and target seat
     db = SessionLocal()
     try:
-        show = db.query(Show).filter(Show.is_active == True).first()
+        now = datetime.now(timezone.utc)
+        show = db.query(Show).filter(Show.is_active == True, Show.start_time > now).first()
+        if not show:
+            show = db.query(Show).filter(Show.is_active == True).first()
+            if show:
+                show.start_time = now + timedelta(days=1)
+                show.end_time = show.start_time + timedelta(minutes=150)
+                db.commit()
+                db.refresh(show)
         assert show is not None, "Test show must exist from seed."
 
         # Find an available seat in this show
