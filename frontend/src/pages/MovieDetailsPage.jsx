@@ -12,12 +12,13 @@ import {
   Share2,
   Info,
   CheckCircle2,
-  Play
+  Play,
+  Film
 } from 'lucide-react';
 
 export default function MovieDetailsPage() {
   const { slug } = useParams();
-  const { selectedCity, user, isAuthenticated, openAuthModal } = useAuth();
+  const { selectedCity = 'Ahmedabad', user, isAuthenticated, openAuthModal } = useAuth();
   const navigate = useNavigate();
 
   const [movie, setMovie] = useState(null);
@@ -27,7 +28,7 @@ export default function MovieDetailsPage() {
   const [loading, setLoading] = useState(true);
 
   // Review state
-  const [userRating, setUserRating] = useState(9);
+  const [userRating, setUserRating] = useState(4);
   const [userComment, setUserComment] = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -178,8 +179,8 @@ export default function MovieDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#888888] bg-[#F5F5F5]">
-        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="min-h-screen py-32 text-center text-[#666666] bg-[#FFFFFF]">
+        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Loading movie details & showtimes...</p>
       </div>
     );
@@ -187,9 +188,9 @@ export default function MovieDetailsPage() {
 
   if (!movie) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#222222] bg-[#F5F5F5]">
+      <div className="min-h-screen py-32 text-center text-[#202020] bg-[#FFFFFF]">
         <h2 className="text-xl font-bold">Movie Not Found</h2>
-        <Link to="/" className="text-[#F84464] text-xs font-semibold underline mt-2 inline-block">
+        <Link to="/" className="text-[#D5A936] text-xs font-semibold underline mt-2 inline-block">
           Return to Movies
         </Link>
       </div>
@@ -199,18 +200,18 @@ export default function MovieDetailsPage() {
   const avgRating =
     movie.reviews?.length > 0
       ? (movie.reviews.reduce((acc, r) => acc + r.rating, 0) / movie.reviews.length).toFixed(1)
-      : '8.8';
+      : '4.0';
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen pb-20">
+    <div className="bg-[#FFFFFF] min-h-screen pb-20">
       
-      {/* 1. BookMyShow Hero Banner (Dark Slate Backdrop with Left Poster + Details) */}
-      <div className="bg-[#1F2533] text-white py-8 sm:py-10 border-b border-[#2C3446]">
+      {/* 1. Cinematic Movie Hero Strip (Light background with crisp borders) */}
+      <div className="bg-[#F5F5F5] border-b border-[#DADADA] py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
             
             {/* Movie Poster */}
-            <div className="w-48 sm:w-60 aspect-[2/3] rounded-lg overflow-hidden border border-white/20 shadow-2xl flex-shrink-0 bg-black">
+            <div className="w-48 sm:w-56 aspect-[2/3] rounded-sm overflow-hidden border border-[#DADADA] shadow-card flex-shrink-0 bg-white">
               <img
                 src={movie.posterUrl}
                 alt={movie.title}
@@ -220,49 +221,50 @@ export default function MovieDetailsPage() {
 
             {/* Movie Meta Information */}
             <div className="flex-1 space-y-4 text-center md:text-left">
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#202020]">
                 {movie.title}
               </h1>
 
-              {/* Rating Card */}
-              <div className="inline-flex items-center space-x-4 bg-[#2C3446] p-3 rounded-lg border border-white/10">
+              {/* Rating Card with Gold Accent */}
+              <div className="inline-flex items-center space-x-4 bg-white p-2.5 rounded-sm border border-[#DADADA]">
                 <div className="flex items-center space-x-1.5">
-                  <Star className="w-5 h-5 text-[#F84464] fill-[#F84464]" />
-                  <span className="text-lg font-bold text-white">{avgRating}/10</span>
-                  <span className="text-xs text-[#AAAAAA] ml-1">({movie.reviews?.length || 42}K Votes)</span>
+                  <Star className="w-4 h-4 text-[#D5A936] fill-[#D5A936]" />
+                  <span className="text-base font-bold text-[#202020]">{avgRating} / 5</span>
+                  <span className="text-xs text-[#666666] ml-1">({movie.reviews?.length || 4} Ratings)</span>
                 </div>
-                <div className="h-6 w-px bg-white/20" />
+                <div className="h-5 w-px bg-[#DADADA]" />
                 <button
                   type="button"
                   onClick={() => setShowReviewModal(true)}
-                  className="px-3 py-1 bg-white hover:bg-slate-100 text-[#222222] text-xs font-bold rounded transition shadow-sm"
+                  className="px-3 py-1 bg-[#F5F5F5] hover:bg-[#FBF6EA] border border-[#DADADA] hover:border-[#D5A936] text-[#202020] hover:text-[#D5A936] text-xs font-semibold rounded-sm transition"
                 >
                   Rate now
                 </button>
               </div>
 
               {/* Formats & Languages */}
-              <div className="space-y-1 text-xs">
+              <div className="space-y-1.5 text-xs text-[#202020]">
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                  <span className="px-2 py-0.5 bg-white/10 rounded text-white font-medium">
-                    2D, 3D, IMAX 3D, 4DX
+                  <span className="px-2.5 py-0.5 bg-white border border-[#DADADA] rounded-sm text-[#202020] font-medium">
+                    2D, 3D, IMAX 3D, Dolby Atmos
                   </span>
-                  <span className="px-2 py-0.5 bg-white/10 rounded text-white font-medium">
+                  <span className="px-2.5 py-0.5 bg-white border border-[#DADADA] rounded-sm text-[#202020] font-medium">
                     {movie.language}
                   </span>
                 </div>
-                <p className="text-[#CCCCCC] pt-1">
+                <p className="text-[#666666] pt-1">
                   {movie.durationMinutes} mins • {movie.genres?.map((g) => g.name).join(', ')} • {movie.certification} • {new Date(movie.releaseDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </p>
               </div>
 
-              {/* Prominent Red Book Tickets Button */}
+              {/* Gold Book Tickets Button */}
               <div className="pt-2">
                 <button
+                  type="button"
                   onClick={scrollToBookings}
-                  className="px-10 py-3 bg-[#F84464] hover:bg-[#E03756] text-white font-bold text-sm rounded-lg transition shadow-md"
+                  className="px-8 py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold text-sm rounded-sm transition shadow-sm"
                 >
-                  Book tickets
+                  Book Tickets
                 </button>
               </div>
             </div>
@@ -271,231 +273,232 @@ export default function MovieDetailsPage() {
         </div>
       </div>
 
-      {/* 2. Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* 2. Main Content & Showtimes Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-12">
         
-        {/* Left 2 Columns: Date Selector & Theatre Showtimes */}
-        <div id="showtimes-section" className="lg:col-span-2 space-y-6">
-          
-          {/* Horizontal Date Selector (BookMyShow clean box tabs) */}
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-3 shadow-bms flex items-center space-x-2 overflow-x-auto">
-            {dateOptions.map((opt, idx) => (
-              <button
-                key={opt.offset}
-                onClick={() => setSelectedDateIndex(idx)}
-                className={`flex-shrink-0 px-4 py-2 rounded text-center transition min-w-[72px] ${
-                  selectedDateIndex === idx
-                    ? 'bg-[#F84464] text-white font-bold shadow-sm'
-                    : 'bg-white hover:bg-[#F9F9F9] text-[#222222] border border-[#E5E5E5]'
-                }`}
-              >
-                <span className="block text-[10px] font-bold tracking-wider">{opt.dayShort}</span>
-                <span className="block text-base font-black leading-tight">{opt.dateNum}</span>
-                <span className="block text-[10px] font-medium">{opt.monthShort}</span>
-              </button>
-            ))}
+        {/* Showtimes & Date Picker */}
+        <div id="showtimes-section" className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#DADADA] gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-[#202020]">Showtimes in {selectedCity}</h2>
+              <p className="text-xs text-[#666666] mt-0.5">Select your preferred date and auditorium time slot.</p>
+            </div>
+
+            {/* Date Picker Tabs (Boxy light tabs) */}
+            <div className="flex items-center space-x-2 overflow-x-auto pb-1">
+              {dateOptions.map((dateObj, idx) => (
+                <button
+                  key={dateObj.offset}
+                  onClick={() => setSelectedDateIndex(idx)}
+                  className={`flex flex-col items-center justify-center px-4 py-1.5 rounded-sm border transition text-center min-w-[65px] ${
+                    selectedDateIndex === idx
+                      ? 'bg-[#D5A936] text-[#202020] border-[#D5A936] font-bold shadow-sm'
+                      : 'bg-white text-[#666666] border-[#DADADA] hover:border-[#D5A936]'
+                  }`}
+                >
+                  <span className="text-[10px] uppercase font-bold">{dateObj.dayShort}</span>
+                  <span className="text-base font-extrabold leading-none my-0.5">{dateObj.dateNum}</span>
+                  <span className="text-[9px] uppercase font-semibold">{dateObj.monthShort}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Filter Bar (Formats / Timings) */}
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-3 shadow-bms flex flex-wrap items-center justify-between text-xs text-[#555555]">
-            <span className="font-semibold text-[#222222]">Theatres Screening in {selectedCity}</span>
-            <div className="flex items-center space-x-3">
-              <span className="flex items-center space-x-1">
-                <span className="w-2 h-2 rounded-full bg-[#1EA83C]" />
-                <span className="text-[11px]">AVAILABLE</span>
-              </span>
-              <span className="flex items-center space-x-1">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span className="text-[11px]">FAST FILLING</span>
-              </span>
-            </div>
+          {/* Formats Filter */}
+          <div className="flex flex-wrap items-center gap-2">
+            {['ALL', '2D', 'IMAX 3D', '4DX', 'Dolby Atmos 2D'].map((fmt) => (
+              <button
+                key={fmt}
+                onClick={() => setSelectedFormat(fmt)}
+                className={`px-3 py-1 text-xs rounded-sm transition font-medium border ${
+                  selectedFormat === fmt
+                    ? 'bg-[#26343C] text-white border-[#26343C]'
+                    : 'bg-white text-[#666666] border-[#DADADA] hover:text-[#202020]'
+                }`}
+              >
+                {fmt}
+              </button>
+            ))}
           </div>
 
           {/* Theatres & Showtimes List */}
           <div className="space-y-4">
             {Object.keys(groupedTheatres).length === 0 ? (
-              <div className="bg-white border border-[#E5E5E5] rounded-lg p-10 text-center text-[#888888]">
-                <MapPin className="w-8 h-8 text-[#CCCCCC] mx-auto mb-2" />
-                <h4 className="font-bold text-[#222222] text-sm">No Showtimes Found</h4>
-                <p className="text-xs text-[#777777] mt-1">There are no screenings scheduled in {selectedCity} on this date.</p>
+              <div className="bg-white border border-[#DADADA] rounded-sm p-12 text-center text-[#666666]">
+                <Calendar className="w-10 h-10 text-[#DADADA] mx-auto mb-2" />
+                <h4 className="font-bold text-sm text-[#202020]">No Scheduled Shows for {dateOptions[selectedDateIndex].dayShort}</h4>
+                <p className="text-xs text-[#888888] mt-1">Please select another date or explore other cities.</p>
               </div>
             ) : (
-              Object.values(groupedTheatres).map(({ theatre, shows: tShows }) => (
-                <div
-                  key={theatre.id}
-                  className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <Heart className="w-4 h-4 text-[#888888] hover:text-[#F84464] cursor-pointer transition" />
-                        <h3 className="font-bold text-[#222222] text-sm sm:text-base">
-                          {theatre.name}
-                        </h3>
+              Object.values(groupedTheatres).map(({ theatre, shows: tShows }) => {
+                const filteredShows =
+                  selectedFormat === 'ALL'
+                    ? tShows
+                    : tShows.filter((s) => s.screen?.screenType?.toLowerCase().includes(selectedFormat.toLowerCase()));
+
+                if (filteredShows.length === 0) return null;
+
+                return (
+                  <div
+                    key={theatre.id}
+                    className="bg-white border border-[#DADADA] rounded-sm p-5 hover:border-[#D5A936] transition"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      
+                      {/* Left: Theatre Name & Details */}
+                      <div className="md:w-1/3">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-bold text-sm text-[#202020]">{theatre.name}</h3>
+                          <Info className="w-3.5 h-3.5 text-[#888888] cursor-pointer" title={theatre.address} />
+                        </div>
+                        <p className="text-xs text-[#666666] mt-1 flex items-center">
+                          <MapPin className="w-3.5 h-3.5 mr-1 text-[#888888] flex-shrink-0" />
+                          <span className="truncate">{theatre.address || theatre.city}</span>
+                        </p>
+                        <div className="flex items-center space-x-3 mt-2 text-[11px] text-[#666666]">
+                          <span className="text-emerald-700 font-medium">✓ M-Ticket Available</span>
+                          <span>•</span>
+                          <span className="text-[#666666]">Food & Beverage</span>
+                        </div>
                       </div>
-                      <p className="text-xs text-[#666666] mt-0.5 ml-6">
-                        {theatre.address}
-                      </p>
-                    </div>
 
-                    <div className="flex items-center space-x-2 text-[11px] text-[#1EA83C] font-medium hidden sm:flex">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>M-Ticket</span>
+                      {/* Right: Show Timings Grid */}
+                      <div className="flex-1 flex flex-wrap items-center gap-3">
+                        {filteredShows.map((s) => {
+                          const date = new Date(s.startTime);
+                          const timeString = date.toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                          });
+
+                          return (
+                            <Link
+                              key={s.id}
+                              to={`/shows/${s.id}/seats`}
+                              className="group relative flex flex-col items-center justify-center px-4 py-2 bg-white border border-[#DADADA] hover:border-[#D5A936] rounded-sm transition min-w-[95px] text-center"
+                            >
+                              <span className="text-xs font-bold text-[#202020] group-hover:text-[#D5A936]">
+                                {timeString}
+                              </span>
+                              <span className="text-[10px] text-[#666666] mt-0.5">
+                                {s.screen?.name || 'Screen 1'}
+                              </span>
+                              <span className="text-[9px] text-[#888888]">
+                                {s.screen?.screenType}
+                              </span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+
                     </div>
                   </div>
+                );
+              })
+            )}
+          </div>
+        </div>
 
-                  {/* Clean Horizontal Showtimes Grid */}
-                  <div className="pt-2 pl-6 flex flex-wrap items-center gap-3">
-                    {tShows.map((show) => {
-                      const startTime = new Date(show.startTime);
-                      const timeStr = startTime.toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      });
+        {/* 3. About Movie / Synopsis */}
+        <div className="border-t border-[#DADADA] pt-8">
+          <h3 className="text-lg font-bold text-[#202020] mb-3">About the Movie</h3>
+          <p className="text-xs sm:text-sm text-[#555555] leading-relaxed max-w-4xl">
+            {movie.description || 'An extraordinary theatrical spectacle featuring acclaimed direction, visual effects, and compelling storytelling.'}
+          </p>
+        </div>
 
-                      return (
-                        <button
-                          key={show.id}
-                          onClick={() => navigate(`/shows/${show.id}/seats`)}
-                          className="px-4 py-2 rounded bg-white border border-[#1EA83C] text-[#1EA83C] hover:bg-[#1EA83C] hover:text-white transition text-center shadow-xs group"
-                        >
-                          <span className="block text-xs font-bold leading-tight">
-                            {timeStr}
-                          </span>
-                          <span className="block text-[9px] uppercase tracking-wider text-[#666666] group-hover:text-white/90">
-                            {show.screen?.screenType}
-                          </span>
-                        </button>
-                      );
-                    })}
+        {/* 4. Cast & Crew Cards */}
+        <div className="border-t border-[#DADADA] pt-8">
+          <h3 className="text-lg font-bold text-[#202020] mb-4">Cast & Crew</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+            {[
+              { name: 'Lead Actor', role: 'Main Character', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
+              { name: 'Co-Star', role: 'Supporting Cast', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' },
+              { name: 'Director', role: 'Directing & Story', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
+              { name: 'Music Composer', role: 'Original Score', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80' },
+            ].map((c, i) => (
+              <div key={i} className="text-center bg-white border border-[#DADADA] rounded-sm p-3">
+                <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2 border border-[#DADADA]">
+                  <img src={c.avatar} alt={c.name} className="w-full h-full object-cover" />
+                </div>
+                <h4 className="font-bold text-xs text-[#202020] truncate">{c.name}</h4>
+                <p className="text-[10px] text-[#666666] truncate">{c.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 5. Customer Reviews */}
+        <div className="border-t border-[#DADADA] pt-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-bold text-[#202020]">User Reviews</h3>
+              <p className="text-xs text-[#666666]">Verified feedback from moviegoers who watched this title.</p>
+            </div>
+            <button
+              onClick={() => setShowReviewModal(true)}
+              className="px-4 py-1.5 bg-white border border-[#DADADA] hover:border-[#D5A936] text-[#202020] hover:text-[#D5A936] text-xs font-semibold rounded-sm transition"
+            >
+              Write Review
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {movie.reviews?.length === 0 ? (
+              <p className="text-xs text-[#888888] col-span-full">No reviews submitted yet. Be the first to rate!</p>
+            ) : (
+              movie.reviews?.map((r) => (
+                <div key={r.id} className="bg-white border border-[#DADADA] rounded-sm p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold text-xs text-[#202020]">{r.userName || 'Verified Moviegoer'}</span>
+                    <div className="flex items-center text-[#D5A936] text-xs font-bold">
+                      <Star className="w-3.5 h-3.5 fill-[#D5A936] mr-1" />
+                      <span>{r.rating}/5</span>
+                    </div>
                   </div>
+                  <p className="text-xs text-[#555555]">{r.comment || 'Thrilling theatre experience!'}</p>
                 </div>
               ))
             )}
           </div>
         </div>
 
-        {/* Right 1 Column: About Movie & Cast / Reviews */}
-        <div className="space-y-6">
-          
-          {/* About The Movie Card */}
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-2">
-            <h3 className="font-bold text-sm text-[#222222]">About the Movie</h3>
-            <p className="text-xs text-[#555555] leading-relaxed">
-              {movie.description}
-            </p>
-          </div>
-
-          {/* Cast & Crew Section */}
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3">
-            <h3 className="font-bold text-sm text-[#222222]">Cast & Crew</h3>
-            <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              <div className="space-y-1">
-                <div className="w-14 h-14 rounded-full bg-[#EEEEEE] mx-auto overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
-                    alt="Actor"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="font-bold text-[#222222] text-[11px] truncate">Timothée C.</p>
-                <p className="text-[10px] text-[#888888]">Actor</p>
-              </div>
-
-              <div className="space-y-1">
-                <div className="w-14 h-14 rounded-full bg-[#EEEEEE] mx-auto overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
-                    alt="Actor"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="font-bold text-[#222222] text-[11px] truncate">Zendaya</p>
-                <p className="text-[10px] text-[#888888]">Actor</p>
-              </div>
-
-              <div className="space-y-1">
-                <div className="w-14 h-14 rounded-full bg-[#EEEEEE] mx-auto overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80"
-                    alt="Director"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="font-bold text-[#222222] text-[11px] truncate">Denis V.</p>
-                <p className="text-[10px] text-[#888888]">Director</p>
-              </div>
-            </div>
-          </div>
-
-          {/* User Reviews */}
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#F0F0F0]">
-              <h3 className="font-bold text-sm text-[#222222]">Top Reviews</h3>
-              <button
-                onClick={() => setShowReviewModal(true)}
-                className="text-xs font-bold text-[#F84464] hover:underline"
-              >
-                Write Review
-              </button>
-            </div>
-
-            <div className="space-y-3 max-h-60 overflow-y-auto">
-              {movie.reviews?.length === 0 ? (
-                <p className="text-xs text-[#888888] italic text-center py-2">
-                  No reviews yet. Be the first to share your thoughts!
-                </p>
-              ) : (
-                movie.reviews?.map((r) => (
-                  <div key={r.id} className="p-3 bg-[#F9F9F9] rounded border border-[#E5E5E5] text-xs">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-[#222222]">{r.userName}</span>
-                      <span className="flex items-center space-x-1 text-[#F84464] font-bold text-[11px]">
-                        <Star className="w-3 h-3 fill-[#F84464]" />
-                        <span>{r.rating}/10</span>
-                      </span>
-                    </div>
-                    {r.comment && <p className="text-[#555555]">{r.comment}</p>}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-        </div>
-
       </div>
 
-      {/* Write Review Modal */}
+      {/* Review Submission Modal */}
       {showReviewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fade-in">
-          <div className="bg-white border border-[#E5E5E5] rounded-lg max-w-sm w-full p-6 text-[#222222] shadow-2xl">
-            <h3 className="font-bold text-sm mb-3">Rate {movie.title}</h3>
-
-            <form onSubmit={handleReviewSubmit} className="space-y-3 text-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
+          <div className="bg-white border border-[#DADADA] rounded-sm shadow-xl p-6 max-w-sm w-full text-[#202020]">
+            <h3 className="font-bold text-base mb-1">Rate "{movie.title}"</h3>
+            <p className="text-xs text-[#666666] mb-4">Share your thoughts on the performance and cinema sound.</p>
+            
+            <form onSubmit={handleReviewSubmit} className="space-y-4">
               <div>
-                <label className="block text-[#555555] font-medium mb-1">
-                  Rating: <span className="font-bold text-[#F84464]">{userRating}/10</span>
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={userRating}
-                  onChange={(e) => setUserRating(e.target.value)}
-                  className="w-full accent-[#F84464] cursor-pointer"
-                />
+                <label className="block text-xs font-medium text-[#444444] mb-1">Score (1 to 5 Stars)</label>
+                <div className="flex items-center space-x-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setUserRating(s)}
+                      className="p-1 text-[#D5A936]"
+                    >
+                      <Star className={`w-6 h-6 ${s <= userRating ? 'fill-[#D5A936]' : 'text-[#DADADA]'}`} />
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div>
-                <label className="block text-[#555555] font-medium mb-1">Your Review</label>
+                <label className="block text-xs font-medium text-[#444444] mb-1">Your Review</label>
                 <textarea
                   rows="3"
+                  required
                   value={userComment}
                   onChange={(e) => setUserComment(e.target.value)}
-                  placeholder="What did you think of the direction, music, or performance?"
-                  className="w-full p-2 border border-[#E5E5E5] rounded text-xs focus:outline-none focus:border-[#F84464]"
+                  placeholder="The soundtrack and visuals were fantastic..."
+                  className="w-full p-2.5 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
@@ -503,14 +506,14 @@ export default function MovieDetailsPage() {
                 <button
                   type="button"
                   onClick={() => setShowReviewModal(false)}
-                  className="flex-1 py-2 border border-[#E5E5E5] text-[#666666] font-semibold rounded"
+                  className="flex-1 py-2 bg-white border border-[#DADADA] text-[#666666] text-xs font-semibold rounded-sm hover:bg-[#F5F5F5]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={reviewSubmitting}
-                  className="flex-1 py-2 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded"
+                  className="flex-1 py-2 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] text-xs font-bold rounded-sm transition"
                 >
                   {reviewSubmitting ? 'Posting...' : 'Submit'}
                 </button>

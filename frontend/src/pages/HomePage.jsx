@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { graphqlRequest } from '../services/graphqlClient';
 import { useAuth } from '../context/AuthContext';
+import { BookinIconOutline } from '../components/BookinLogo';
 import {
   ChevronLeft,
   ChevronRight,
   Star,
-  ThumbsUp,
   MapPin,
   Film,
   Calendar,
-  Sparkles,
-  Ticket
+  Ticket,
+  Building2,
+  Sparkles
 } from 'lucide-react';
 
 export default function HomePage() {
-  const { selectedCity } = useAuth();
+  const { selectedCity = 'Ahmedabad' } = useAuth();
   const [searchParams] = useSearchParams();
 
   const [movies, setMovies] = useState([]);
@@ -28,31 +29,31 @@ export default function HomePage() {
 
   const urlSearch = searchParams.get('search') || '';
 
-  // Promotional Hero Banners (High quality BookMyShow style landscape banners)
+  // Cinematic Hero Landscape Banners (Matches reference screenshot with Interstellar, Dune, etc.)
   const heroBanners = [
     {
       id: 1,
-      title: "Dune: Part Two",
-      subtitle: "Experience The Epic In IMAX 3D",
-      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=80",
-      ctaSlug: "dune-part-two",
-      badge: "IMAX EXCLUSIVE"
+      title: "Interstellar — Re-Release",
+      subtitle: `Christopher Nolan's Masterpiece Returns to Theatres in ${selectedCity || 'Ahmedabad'}`,
+      imageUrl: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1600&q=80",
+      ctaSlug: "interstellar-re-release",
+      tag: "IMAX RE-RELEASE"
     },
     {
       id: 2,
-      title: "Kalki 2898 AD",
-      subtitle: "The Future of Indian Cinema Arrives",
-      imageUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
-      ctaSlug: "kalki-2898-ad",
-      badge: "MEGA BLOCKBUSTER"
+      title: "Dune: Part Two",
+      subtitle: `Experience The Epic Saga in IMAX 3D across ${selectedCity || 'Ahmedabad'}`,
+      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=80",
+      ctaSlug: "dune-part-two",
+      tag: "CINEMATIC EVENT"
     },
     {
       id: 3,
-      title: "Interstellar — Re-Release",
-      subtitle: "Christopher Nolan's Masterpiece Returns to Theatres",
-      imageUrl: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1600&q=80",
-      ctaSlug: "interstellar-re-release",
-      badge: "LIMITED ENGAGEMENT"
+      title: "Kalki 2898 AD",
+      subtitle: "The Future of Indian Epic Cinema Arrives",
+      imageUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
+      ctaSlug: "kalki-2898-ad",
+      tag: "BLOCKBUSTER"
     }
   ];
 
@@ -90,8 +91,10 @@ export default function HomePage() {
               city
               address
               screens {
+                id
                 name
                 screenType
+                totalSeats
               }
             }
           }
@@ -116,7 +119,7 @@ export default function HomePage() {
     loadHomeContent();
   }, [selectedCity, selectedGenre, selectedLanguage, urlSearch]);
 
-  // Auto-scroll hero banner every 6 seconds
+  // Auto-scroll hero banner
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveBannerIndex((prev) => (prev + 1) % heroBanners.length);
@@ -133,94 +136,94 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen pb-16">
+    <div className="bg-[#FFFFFF] min-h-screen pb-16">
       
-      {/* 1. Large Hero Promotional Carousel (BookMyShow Landscape Banners) */}
-      {!urlSearch && !selectedGenre && (
-        <div className="bg-[#EBEBEB] py-3 sm:py-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative w-full h-[220px] sm:h-[320px] md:h-[360px] rounded-lg overflow-hidden shadow-sm group bg-[#222222]">
-              {/* Slides */}
-              {heroBanners.map((banner, idx) => (
-                <div
-                  key={banner.id}
-                  className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                    idx === activeBannerIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-                  }`}
-                >
-                  <img
-                    src={banner.imageUrl}
-                    alt={banner.title}
-                    className="w-full h-full object-cover object-center filter brightness-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
-                    <span className="inline-block px-2.5 py-0.5 bg-[#F84464] text-white text-[10px] font-bold rounded uppercase tracking-wider mb-2 w-max">
-                      {banner.badge}
-                    </span>
-                    <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-                      {banner.title}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-[#DDDDDD] mt-1 max-w-xl">
-                      {banner.subtitle}
-                    </p>
-                    <div className="mt-4">
-                      <Link
-                        to={`/movie/${banner.ctaSlug}`}
-                        className="inline-flex items-center px-5 py-2 bg-[#F84464] hover:bg-[#E03756] text-white text-xs font-bold rounded transition shadow-sm"
-                      >
-                        Book Tickets
-                      </Link>
-                    </div>
+      {/* 1. Hero Promotional Banner (Matches reference layout: landscape, dark overlay, gold button) */}
+      {!urlSearch && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4">
+          <div className="relative w-full h-[220px] sm:h-[320px] md:h-[380px] rounded-md overflow-hidden bg-[#202020]">
+            {heroBanners.map((banner, idx) => (
+              <div
+                key={banner.id}
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                  idx === activeBannerIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
+              >
+                <img
+                  src={banner.imageUrl}
+                  alt={banner.title}
+                  className="w-full h-full object-cover object-center brightness-90"
+                />
+                
+                {/* Left/bottom dark overlay for text legibility */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent flex flex-col justify-end p-6 sm:p-12 text-white">
+                  <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                    {banner.title}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#CCCCCC] mt-1 max-w-xl">
+                    {banner.subtitle}
+                  </p>
+                  <div className="mt-4">
+                    <Link
+                      to={`/movie/${banner.ctaSlug}`}
+                      className="inline-flex items-center px-4 py-2 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] text-xs font-bold rounded-sm transition shadow-sm"
+                    >
+                      Book Tickets
+                    </Link>
                   </div>
                 </div>
-              ))}
-
-              {/* Prev / Next Arrows */}
-              <button
-                type="button"
-                onClick={prevBanner}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition"
-                aria-label="Previous Banner"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                onClick={nextBanner}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition"
-                aria-label="Next Banner"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              {/* Dot Indicators */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex space-x-1.5">
-                {heroBanners.map((_, dotIdx) => (
-                  <button
-                    key={dotIdx}
-                    onClick={() => setActiveBannerIndex(dotIdx)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      dotIdx === activeBannerIndex ? 'w-6 bg-[#F84464]' : 'w-2 bg-white/60'
-                    }`}
-                    aria-label={`Go to slide ${dotIdx + 1}`}
-                  />
-                ))}
               </div>
+            ))}
+
+            {/* Carousel Navigation Arrows */}
+            <button
+              type="button"
+              onClick={prevBanner}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition"
+              aria-label="Previous Slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={nextBanner}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition"
+              aria-label="Next Slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {/* Indicator Dots */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex space-x-1.5 items-center">
+              {heroBanners.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  onClick={() => setActiveBannerIndex(dotIdx)}
+                  className={`transition-all ${
+                    dotIdx === activeBannerIndex
+                      ? 'w-5 h-1.5 bg-[#D5A936] rounded-full'
+                      : 'w-1.5 h-1.5 bg-white/70 rounded-full'
+                  }`}
+                  aria-label={`Slide ${dotIdx + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* 2. Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-10">
-        
-        {/* Genre / Language Compact Filter Bar */}
-        <div className="bg-white border border-[#E5E5E5] rounded-md p-3 flex flex-wrap items-center justify-between gap-3 shadow-bms">
+      {/* 2. Filter Bar (Directly below hero banner, matching screenshot) */}
+      <div className="border-t border-b border-[#DADADA] bg-white py-2.5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
+          
+          {/* Genre Filters (Left) */}
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => setSelectedGenre('')}
-              className={`px-3 py-1 text-xs font-medium rounded transition ${
-                !selectedGenre ? 'bg-[#F84464] text-white' : 'bg-white text-[#555555] hover:bg-[#F5F5F5] border border-[#E5E5E5]'
+              className={`px-3 py-1 text-xs font-semibold rounded-sm transition ${
+                !selectedGenre
+                  ? 'bg-[#D5A936] text-[#202020]'
+                  : 'bg-white text-[#666666] hover:text-[#202020] border border-[#DADADA]'
               }`}
             >
               All Genres
@@ -229,8 +232,10 @@ export default function HomePage() {
               <button
                 key={g.id}
                 onClick={() => setSelectedGenre(selectedGenre === g.name ? '' : g.name)}
-                className={`px-3 py-1 text-xs font-medium rounded transition ${
-                  selectedGenre === g.name ? 'bg-[#F84464] text-white' : 'bg-white text-[#555555] hover:bg-[#F5F5F5] border border-[#E5E5E5]'
+                className={`px-3 py-1 text-xs font-semibold rounded-sm transition ${
+                  selectedGenre === g.name
+                    ? 'bg-[#D5A936] text-[#202020]'
+                    : 'bg-white text-[#666666] hover:text-[#202020] border border-[#DADADA]'
                 }`}
               >
                 {g.name}
@@ -238,12 +243,13 @@ export default function HomePage() {
             ))}
           </div>
 
+          {/* Language Selector (Right) */}
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-[#777777] font-medium hidden sm:inline">Language:</span>
+            <span className="text-xs text-[#666666] font-medium hidden sm:inline">Language:</span>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="text-xs bg-white border border-[#E5E5E5] rounded px-2.5 py-1 text-[#333333] focus:outline-none focus:border-[#F84464]"
+              className="text-xs bg-white border border-[#DADADA] rounded-sm px-2.5 py-1 text-[#202020] focus:outline-none focus:border-[#D5A936]"
             >
               <option value="">All Languages</option>
               <option value="English">English</option>
@@ -251,173 +257,281 @@ export default function HomePage() {
             </select>
           </div>
         </div>
+      </div>
 
-        {/* 3. Recommended Movies Section (Crucial Section) */}
+      {/* 3. Main Content Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-12">
+        
+        {/* Recommended Movies Section */}
         <div>
           {/* Section Header */}
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[#222222]">
-                Recommended Movies
+              <h2 className="text-xl sm:text-2xl font-bold text-[#202020]">
+                Recommended Movies for {selectedCity || 'Ahmedabad'}
               </h2>
               <p className="text-xs text-[#666666] mt-0.5">
-                Blockbuster hits currently screening in <span className="font-semibold text-[#222222]">{selectedCity}</span>
+                Discover the latest releases in your area.
               </p>
             </div>
             <Link
               to="/?category=movies"
-              className="text-xs font-semibold text-[#F84464] hover:underline flex items-center"
+              className="text-xs font-bold text-[#D5A936] hover:underline flex items-center"
             >
               See All <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
             </Link>
           </div>
 
-          {/* Movies Row / Grid */}
+          {/* Movies Cards Horizontal Grid */}
           {loading ? (
-            <div className="py-20 text-center text-[#888888] bg-white border border-[#E5E5E5] rounded-lg">
-              <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="py-20 text-center text-[#666666] border border-[#DADADA] rounded-sm">
+              <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
               <p className="text-xs font-medium">Fetching cinema listings...</p>
             </div>
           ) : movies.length === 0 ? (
-            <div className="py-16 text-center bg-white border border-[#E5E5E5] rounded-lg p-6">
-              <Film className="w-10 h-10 text-[#CCCCCC] mx-auto mb-2" />
-              <h4 className="font-bold text-[#222222] text-sm">No Movies Found</h4>
-              <p className="text-xs text-[#777777] mt-1">Try clearing filters or switching your city.</p>
+            <div className="border border-[#DADADA] bg-white rounded-sm p-12 text-center max-w-lg mx-auto">
+              <BookinIconOutline className="w-16 h-16 text-[#202020] mx-auto mb-3" />
+              <h4 className="text-base font-bold text-[#202020]">Coming Soon</h4>
+              <p className="text-xs text-[#666666] mt-1">Try clearing filters or switching your city.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5 sm:gap-6">
-              {movies.map((movie) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+              {movies.map((movie, index) => {
                 const avgRating =
                   movie.reviews?.length > 0
                     ? (movie.reviews.reduce((acc, r) => acc + r.rating, 0) / movie.reviews.length).toFixed(1)
-                    : '8.8';
+                    : '4.0';
 
                 return (
-                  <Link
-                    key={movie.id}
-                    to={`/movie/${movie.slug}`}
-                    className="group flex flex-col bg-white border border-[#E5E5E5] rounded-lg overflow-hidden hover:shadow-bms-card transition-all"
-                  >
-                    {/* Poster with BookMyShow Style Aspect Ratio */}
-                    <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#EEEEEE]">
-                      <img
-                        src={movie.posterUrl}
-                        alt={movie.title}
-                        className="w-full h-full object-cover group-hover:scale-102 transition duration-300"
-                        loading="lazy"
-                      />
+                  <React.Fragment key={movie.id}>
+                    {/* Movie Card matching the reference screenshot */}
+                    <div className="bg-white border border-[#DADADA] rounded-sm p-2.5 flex flex-col justify-between hover:border-[#D5A936] transition group">
+                      
+                      {/* Poster Area */}
+                      <Link to={`/movie/${movie.slug}`} className="block relative aspect-[3/4] bg-[#F5F5F5] border border-[#DADADA] rounded-sm overflow-hidden mb-2.5">
+                        {movie.posterUrl ? (
+                          <img
+                            src={movie.posterUrl}
+                            alt={movie.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                            onError={(e) => {
+                              // If image fails to load, fallback to graphic placeholder matching screenshot
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
 
-                      {/* Rating Overlay Bar at Bottom of Poster */}
-                      <div className="absolute bottom-0 inset-x-0 bg-black/80 px-2.5 py-1.5 flex items-center justify-between text-white text-[11px] font-medium backdrop-blur-xs">
-                        <span className="flex items-center space-x-1 text-white font-bold">
-                          <Star className="w-3.5 h-3.5 text-[#F84464] fill-[#F84464]" />
-                          <span>{avgRating}/10</span>
-                          <span className="text-[10px] text-[#BBBBBB] font-normal ml-1">
-                            ({Math.floor(Math.random() * 40 + 20)}K Votes)
-                          </span>
-                        </span>
-                        <span className="text-[10px] bg-white/20 px-1 rounded text-white font-semibold">
-                          {movie.certification}
-                        </span>
+                        {/* Graphic Placeholder with BookIN Monogram (matches screenshot cross-box) */}
+                        <div
+                          className="w-full h-full absolute inset-0 flex flex-col items-center justify-center p-4 text-[#202020] bg-white"
+                          style={{ display: movie.posterUrl ? 'none' : 'flex' }}
+                        >
+                          <svg className="w-full h-full absolute inset-0 pointer-events-none opacity-20" preserveAspectRatio="none">
+                            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#202020" strokeWidth="1" />
+                            <line x1="100%" y1="0" x2="0" y2="100%" stroke="#202020" strokeWidth="1" />
+                          </svg>
+                          <BookinIconOutline className="w-12 h-12 text-[#202020] z-10" />
+                        </div>
+                      </Link>
+
+                      {/* Movie Metadata */}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <Link
+                            to={`/movie/${movie.slug}`}
+                            className="block font-bold text-xs sm:text-sm text-[#202020] truncate hover:text-[#D5A936] transition"
+                            title={movie.title}
+                          >
+                            {movie.title}
+                          </Link>
+
+                          {/* Rating Row with Gold Star */}
+                          <div className="flex items-center space-x-1.5 mt-1 text-[11px] text-[#666666]">
+                            <div className="flex items-center text-[#D5A936]">
+                              <Star className="w-3.5 h-3.5 fill-[#D5A936] text-[#D5A936] mr-0.5" />
+                              <span className="font-bold text-[#202020]">{avgRating}</span>
+                            </div>
+                            <span>•</span>
+                            <span>{movie.language || 'English'}</span>
+                          </div>
+                        </div>
+
+                        {/* Book Now Button (Dark Charcoal as in screenshot) */}
+                        <Link
+                          to={`/movie/${movie.slug}`}
+                          className="mt-3 block w-full text-center py-1.5 bg-[#26343C] hover:bg-[#1D282E] text-white text-xs font-semibold rounded-sm transition"
+                        >
+                          Book Now
+                        </Link>
                       </div>
                     </div>
 
-                    {/* Movie Info */}
-                    <div className="p-3 flex flex-col flex-1 justify-between">
-                      <div>
-                        <h3 className="font-bold text-[#222222] text-sm sm:text-base leading-snug group-hover:text-[#F84464] transition truncate">
-                          {movie.title}
-                        </h3>
-                        <p className="text-xs text-[#777777] mt-1 truncate">
-                          {movie.certification} • {movie.language}
-                        </p>
-                        <p className="text-[11px] text-[#888888] truncate mt-0.5">
-                          {movie.genres?.map((g) => g.name).join(', ') || 'Action, Drama'}
+                    {/* Insert Coming Soon Empty-State card after 2nd card if present, exactly as shown in reference */}
+                    {index === 1 && (
+                      <div className="hidden lg:flex border border-[#DADADA] bg-white rounded-sm p-4 flex-col items-center justify-center text-center">
+                        <BookinIconOutline className="w-14 h-14 text-[#202020] mb-3" />
+                        <h4 className="text-sm font-bold text-[#202020]">Coming Soon</h4>
+                        <p className="text-[11px] text-[#666666] mt-1 max-w-[140px] leading-tight">
+                          Try clearing filters or switching your city.
                         </p>
                       </div>
-
-                      <div className="mt-3 pt-2 border-t border-[#F0F0F0] flex items-center justify-between text-xs">
-                        <span className="text-[#888888] text-[11px]">{movie.durationMinutes} mins</span>
-                        <span className="text-[#F84464] font-semibold text-xs group-hover:underline">
-                          Book Tickets
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
           )}
         </div>
 
-        {/* 4. Stream Banner Strip (BookMyShow "The Best of Live Events" / "Stream" style) */}
-        <div className="bg-[#2B3148] rounded-lg p-5 sm:p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-bms">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded bg-[#F84464] flex items-center justify-center font-bold text-lg text-white">
-              ▶
-            </div>
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-[#F84464]">
-                BookIN Stream
-              </span>
-              <h3 className="text-base sm:text-lg font-bold">
-                Endless Entertainment Anytime. Anywhere.
-              </h3>
-              <p className="text-xs text-[#AAAAAA] mt-0.5">
-                Rent or buy the latest blockbuster releases directly from home.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="px-5 py-2 bg-[#F84464] hover:bg-[#E03756] text-white text-xs font-bold rounded transition whitespace-nowrap shadow-sm"
-          >
-            Explore Stream
-          </button>
-        </div>
-
-        {/* 5. Popular Theatres / Cinemas in [City] */}
-        {theatres.length > 0 && (
-          <div>
+        {/* 4. Now Showing Section */}
+        {movies.length > 0 && (
+          <div className="border-t border-[#DADADA] pt-8">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold text-[#222222]">
-                  Cinemas in {selectedCity}
-                </h2>
+                <h3 className="text-lg sm:text-xl font-bold text-[#202020]">
+                  Now Showing in Theatres
+                </h3>
                 <p className="text-xs text-[#666666] mt-0.5">
-                  Top multiplexes featuring IMAX, Dolby Atmos, and 4DX
+                  Catch the top critically acclaimed movies this week.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {theatres.map((t) => (
-                <div
-                  key={t.id}
-                  className="bg-white border border-[#E5E5E5] rounded-lg p-4 hover:shadow-bms-card transition"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-bold text-[#222222] text-sm">{t.name}</h4>
-                      <p className="text-xs text-[#666666] mt-1 line-clamp-1">{t.address}</p>
+              {movies.slice(0, 3).map((m) => (
+                <div key={m.id} className="border border-[#DADADA] rounded-sm p-4 flex items-center space-x-3.5 bg-white hover:border-[#D5A936] transition">
+                  <div className="w-16 h-20 bg-[#F5F5F5] rounded-sm overflow-hidden flex-shrink-0 border border-[#DADADA]">
+                    {m.posterUrl ? (
+                      <img src={m.posterUrl} alt={m.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#999999]">
+                        <Film className="w-6 h-6" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-sm text-[#202020] truncate">{m.title}</h4>
+                    <p className="text-xs text-[#666666] mt-0.5 truncate">
+                      {m.genres?.map(g => g.name).join(', ') || 'Feature Film'}
+                    </p>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <span className="text-[10px] bg-[#F5F5F5] border border-[#DADADA] px-1.5 py-0.5 rounded-sm text-[#555555]">
+                        {m.durationMinutes} mins
+                      </span>
+                      <span className="text-[10px] bg-[#FBF6EA] text-[#D5A936] border border-[#E2C36E] px-1.5 py-0.5 rounded-sm font-semibold">
+                        {m.certification || 'UA'}
+                      </span>
                     </div>
                   </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[#F0F0F0]">
-                    {t.screens?.map((sc) => (
-                      <span
-                        key={sc.id || sc.name}
-                        className="px-2 py-0.5 rounded bg-[#F5F5F5] border border-[#E5E5E5] text-[10px] text-[#555555] font-medium"
-                      >
-                        {sc.screenType}
-                      </span>
-                    ))}
-                  </div>
+                  <Link
+                    to={`/movie/${m.slug}`}
+                    className="px-3 py-1.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-semibold text-xs rounded-sm transition flex-shrink-0"
+                  >
+                    Shows
+                  </Link>
                 </div>
               ))}
             </div>
           </div>
         )}
+
+        {/* 5. Popular Cinemas Section */}
+        <div className="border-t border-[#DADADA] pt-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#202020]">
+                Popular Cinemas in {selectedCity || 'Ahmedabad'}
+              </h3>
+              <p className="text-xs text-[#666666] mt-0.5">
+                Premium multiplexes, Dolby Atmos & IMAX auditoriums.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {theatres.length === 0 ? (
+              <div className="col-span-full py-8 text-center text-xs text-[#888888] border border-[#DADADA] rounded-sm">
+                No cinemas registered in this city yet.
+              </div>
+            ) : (
+              theatres.map((t) => (
+                <div key={t.id} className="border border-[#DADADA] rounded-sm p-4 bg-white hover:border-[#D5A936] transition">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm text-[#202020]">{t.name}</h4>
+                      <p className="text-xs text-[#666666] flex items-center mt-1">
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-[#888888] flex-shrink-0" />
+                        <span className="truncate">{t.address || t.city}</span>
+                      </p>
+                    </div>
+                    <Building2 className="w-5 h-5 text-[#D5A936] flex-shrink-0" />
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-[#F5F5F5] flex flex-wrap gap-1.5">
+                    {t.screens?.map((sc) => (
+                      <span key={sc.id} className="text-[10px] px-2 py-0.5 rounded-sm bg-[#F5F5F5] text-[#555555] border border-[#DADADA]">
+                        {sc.screenType}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* 6. Upcoming Events Section */}
+        <div className="border-t border-[#DADADA] pt-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#202020]">
+                Upcoming Events & Experiences
+              </h3>
+              <p className="text-xs text-[#666666] mt-0.5">
+                Comedy shows, live concerts, and exclusive screenings.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="border border-[#DADADA] rounded-sm p-4 bg-white flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-[#D5A936] uppercase tracking-wider">LIVE COMEDY</span>
+                <h4 className="font-bold text-sm text-[#202020] mt-1">The Standup Comedy Marathon</h4>
+                <p className="text-xs text-[#666666] mt-1">Experience non-stop laughter with top touring comedians.</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#F5F5F5] flex items-center justify-between text-xs">
+                <span className="text-[#666666]">Starting ₹499</span>
+                <span className="text-[#D5A936] font-semibold cursor-pointer hover:underline">Explore</span>
+              </div>
+            </div>
+
+            <div className="border border-[#DADADA] rounded-sm p-4 bg-white flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-[#D5A936] uppercase tracking-wider">MUSIC FESTIVAL</span>
+                <h4 className="font-bold text-sm text-[#202020] mt-1">Acoustic Sunsets 2026</h4>
+                <p className="text-xs text-[#666666] mt-1">An open-air evening of indie melodies and acoustic bands.</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#F5F5F5] flex items-center justify-between text-xs">
+                <span className="text-[#666666]">Starting ₹899</span>
+                <span className="text-[#D5A936] font-semibold cursor-pointer hover:underline">Explore</span>
+              </div>
+            </div>
+
+            <div className="border border-[#DADADA] rounded-sm p-4 bg-white flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-[#D5A936] uppercase tracking-wider">PREMIERE SCREENING</span>
+                <h4 className="font-bold text-sm text-[#202020] mt-1">Classic Film Society: 70mm Special</h4>
+                <p className="text-xs text-[#666666] mt-1">Restored cinema prints projected in vintage auditoriums.</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#F5F5F5] flex items-center justify-between text-xs">
+                <span className="text-[#666666]">Starting ₹350</span>
+                <span className="text-[#D5A936] font-semibold cursor-pointer hover:underline">Explore</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>

@@ -137,7 +137,7 @@ export default function SeatSelectionPage() {
 
   const sortedRows = Object.values(rowsMap).sort((a, b) => a.row.localeCompare(b.row));
 
-  // Toggle seat
+  // Toggle seat selection
   const toggleSeatSelection = (seat) => {
     if (seat.status !== 'AVAILABLE') return;
 
@@ -209,7 +209,6 @@ export default function SeatSelectionPage() {
       });
     } catch (err) {
       setErrorMsg(err.message || 'Seat reservation failed. Please select different seats.');
-      // Refresh seats
       const refreshQuery = `query { showSeats(showId: "${showId}") { id seatId row number tier price status isAccessible } }`;
       graphqlRequest(refreshQuery).then((res) => setShowSeats(res.showSeats || []));
     } finally {
@@ -219,8 +218,8 @@ export default function SeatSelectionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#888888] bg-[#F5F5F5]">
-        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="min-h-screen py-32 text-center text-[#666666] bg-[#FFFFFF]">
+        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Loading seat map...</p>
       </div>
     );
@@ -228,9 +227,9 @@ export default function SeatSelectionPage() {
 
   if (!show) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#222222] bg-[#F5F5F5]">
+      <div className="min-h-screen py-32 text-center text-[#202020] bg-[#FFFFFF]">
         <h2 className="text-xl font-bold">Show Not Found</h2>
-        <Link to="/" className="text-[#F84464] text-xs font-semibold underline mt-2 inline-block">
+        <Link to="/" className="text-[#D5A936] text-xs font-semibold underline mt-2 inline-block">
           Return to Movies
         </Link>
       </div>
@@ -244,20 +243,20 @@ export default function SeatSelectionPage() {
   });
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen pb-32">
+    <div className="bg-[#FFFFFF] min-h-screen pb-32">
       
       {/* 1. Clean Top Header Bar */}
-      <div className="bg-white border-b border-[#E5E5E5] py-3 sticky top-16 z-30 shadow-xs">
+      <div className="bg-white border-b border-[#DADADA] py-3 sticky top-14 sm:top-16 z-30 shadow-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}
-              className="p-1.5 rounded hover:bg-[#F5F5F5] text-[#555555] transition"
+              className="p-1.5 rounded-sm hover:bg-[#F5F5F5] border border-[#DADADA] text-[#202020] transition"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-sm sm:text-base font-bold text-[#222222]">
+              <h1 className="text-sm sm:text-base font-bold text-[#202020]">
                 {show.movie.title}
               </h1>
               <p className="text-xs text-[#666666]">
@@ -267,27 +266,27 @@ export default function SeatSelectionPage() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#1EA83C]' : 'bg-amber-500'}`} />
-            <span className="text-[11px] text-[#777777] hidden sm:inline">
-              {wsConnected ? 'Live Updates Active' : 'Connecting Sync...'}
+            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#D5A936]' : 'bg-amber-400'}`} />
+            <span className="text-[11px] text-[#666666] hidden sm:inline">
+              {wsConnected ? 'Real-Time Sync Active' : 'Connecting Sync...'}
             </span>
           </div>
         </div>
       </div>
 
       {/* 2. Main Seat Layout Area */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
         {/* Error notification */}
         {errorMsg && (
-          <div className="mb-4 p-3 bg-[#FFF1F3] border border-[#F84464]/30 rounded text-[#F84464] text-xs flex items-center space-x-2">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-red-600 text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {/* Seat Layout Box */}
-        <div className="bg-white border border-[#E5E5E5] rounded-lg p-6 sm:p-10 shadow-bms">
+        <div className="bg-white border border-[#DADADA] rounded-sm p-6 sm:p-10 shadow-subtle">
           
           {/* Seat Tiers & Rows */}
           <div className="space-y-8">
@@ -297,13 +296,14 @@ export default function SeatSelectionPage() {
               return (
                 <div key={row} className="space-y-2">
                   {/* Category Header */}
-                  <div className="text-[11px] font-bold text-[#888888] uppercase tracking-wider pb-1 border-b border-[#F0F0F0]">
-                    {tier} — Rs. {price.toFixed(2)}
+                  <div className="text-[10px] font-bold text-[#666666] uppercase tracking-wider pb-1 border-b border-[#F5F5F5] flex justify-between items-center">
+                    <span>{tier}</span>
+                    <span>₹{price.toFixed(2)}</span>
                   </div>
 
                   {/* Seats in this row */}
                   <div className="flex items-center justify-center space-x-2 sm:space-x-3 py-1">
-                    <span className="w-5 text-center text-xs font-bold text-[#888888]">{row}</span>
+                    <span className="w-5 text-center text-xs font-bold text-[#666666]">{row}</span>
 
                     <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap justify-center">
                       {seats
@@ -316,20 +316,20 @@ export default function SeatSelectionPage() {
 
                           let seatClasses = '';
                           if (isSelected) {
-                            // Selected: Green
-                            seatClasses = 'bg-[#1EA83C] border-[#1EA83C] text-white font-bold';
+                            // Selected: Gold background, dark text
+                            seatClasses = 'bg-[#D5A936] border-[#D5A936] text-[#1A1A1A] font-bold shadow-sm';
                           } else if (isBooked) {
                             // Booked: Grey
-                            seatClasses = 'bg-[#EEEEEE] border-[#DDDDDD] text-[#AAAAAA] cursor-not-allowed';
+                            seatClasses = 'bg-[#EAEAEA] border-[#DADADA] text-[#AAAAAA] cursor-not-allowed';
                           } else if (isLocked) {
-                            // Locked: Amber
-                            seatClasses = 'bg-amber-100 border-amber-300 text-amber-700 cursor-not-allowed';
+                            // Locked: Light amber
+                            seatClasses = 'bg-amber-50 border-amber-300 text-amber-700 cursor-not-allowed';
                           } else if (isPremium) {
-                            // Premium: Light purple border
-                            seatClasses = 'bg-white border-[#8B5CF6] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white';
+                            // Premium: Subtle gold border
+                            seatClasses = 'bg-white border-[#E2C36E] text-[#202020] hover:bg-[#FBF6EA] hover:border-[#D5A936]';
                           } else {
-                            // Available: White with Green border
-                            seatClasses = 'bg-white border-[#1EA83C] text-[#1EA83C] hover:bg-[#1EA83C] hover:text-white';
+                            // Available: White with subtle border
+                            seatClasses = 'bg-white border-[#DADADA] text-[#202020] hover:border-[#D5A936] hover:text-[#D5A936]';
                           }
 
                           return (
@@ -338,7 +338,7 @@ export default function SeatSelectionPage() {
                               disabled={!isAvailable}
                               onClick={() => toggleSeatSelection(seat)}
                               className={`w-7 h-7 sm:w-8 sm:h-8 rounded-sm border text-[11px] flex items-center justify-center font-medium transition ${seatClasses}`}
-                              title={`Seat ${row}${seat.number} (${tier} - Rs. ${price})`}
+                              title={`Seat ${row}${seat.number} (${tier} - ₹${price})`}
                             >
                               {seat.number}
                             </button>
@@ -346,37 +346,37 @@ export default function SeatSelectionPage() {
                         })}
                     </div>
 
-                    <span className="w-5 text-center text-xs font-bold text-[#888888]">{row}</span>
+                    <span className="w-5 text-center text-xs font-bold text-[#666666]">{row}</span>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Screen Indicator (BookMyShow "All eyes this way please") */}
+          {/* Screen Indicator */}
           <div className="mt-16 text-center max-w-md mx-auto">
-            <div className="w-full h-1 bg-[#DDDDDD] rounded-full mx-auto" />
-            <p className="text-[11px] font-bold text-[#888888] uppercase tracking-wider mt-2">
+            <div className="w-full h-1 bg-[#DADADA] rounded-full mx-auto" />
+            <p className="text-[10px] font-bold text-[#888888] uppercase tracking-widest mt-2">
               All eyes this way please! (Screen)
             </p>
           </div>
 
           {/* Seat Legend */}
-          <div className="mt-10 pt-6 border-t border-[#F0F0F0] flex flex-wrap items-center justify-center gap-6 text-xs text-[#555555]">
+          <div className="mt-10 pt-6 border-t border-[#F5F5F5] flex flex-wrap items-center justify-center gap-6 text-xs text-[#555555]">
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-white border border-[#1EA83C]" />
+              <div className="w-5 h-5 rounded-sm bg-white border border-[#DADADA]" />
               <span>Available</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-[#1EA83C] border border-[#1EA83C]" />
-              <span className="font-semibold text-[#222222]">Selected</span>
+              <div className="w-5 h-5 rounded-sm bg-[#D5A936] border border-[#D5A936]" />
+              <span className="font-semibold text-[#202020]">Selected</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-[#EEEEEE] border border-[#DDDDDD]" />
-              <span>Sold</span>
+              <div className="w-5 h-5 rounded-sm bg-[#EAEAEA] border border-[#DADADA]" />
+              <span>Booked</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-white border border-[#8B5CF6]" />
+              <div className="w-5 h-5 rounded-sm bg-white border border-[#E2C36E]" />
               <span>Premium (Recliner)</span>
             </div>
           </div>
@@ -384,25 +384,25 @@ export default function SeatSelectionPage() {
         </div>
       </div>
 
-      {/* 3. Bottom Sticky Checkout Bar (BookMyShow Standard) */}
+      {/* 3. Bottom Sticky Checkout Bar */}
       {selectedSeatIds.length > 0 && (
-        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#E5E5E5] py-3.5 z-40 shadow-bms-dropdown animate-fade-in">
+        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#DADADA] py-3.5 z-40 shadow-2xl animate-fade-in">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div>
               <p className="text-xs text-[#666666]">
-                Seats: <span className="font-bold text-[#222222]">{selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')}</span>
+                Seats: <span className="font-bold text-[#202020]">{selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')}</span>
               </p>
-              <p className="text-lg font-black text-[#222222]">
-                Rs. {subtotal.toFixed(2)}
+              <p className="text-lg font-black text-[#202020]">
+                ₹{subtotal.toFixed(2)}
               </p>
             </div>
 
             <button
               onClick={handleProceedToReserve}
               disabled={reserving}
-              className="px-8 py-2.5 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition shadow-sm disabled:opacity-50 flex items-center space-x-2"
+              className="px-8 py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-xs transition shadow-sm disabled:opacity-50 flex items-center space-x-2"
             >
-              <span>{reserving ? 'Reserving...' : `Pay Rs. ${subtotal.toFixed(2)}`}</span>
+              <span>{reserving ? 'Reserving...' : `Pay ₹${subtotal.toFixed(2)}`}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

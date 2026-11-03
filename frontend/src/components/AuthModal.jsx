@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { X, Lock, Mail, User, Phone, ShieldCheck } from 'lucide-react';
+import { BookinLogo } from './BookinLogo';
 
 export default function AuthModal() {
   const { isAuthModalOpen, closeAuthModal, authModalMode, login, register, selectedCity } = useAuth();
@@ -49,37 +50,32 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 transition-opacity animate-fade-in">
-      <div className="relative w-full max-w-sm bg-white border border-[#E5E5E5] rounded-lg shadow-2xl p-6 text-[#222222]">
+      <div className="relative w-full max-w-sm bg-white border border-[#DADADA] rounded-sm shadow-2xl p-6 text-[#202020]">
         
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute top-4 right-4 p-1.5 text-[#888888] hover:text-[#222222] rounded hover:bg-[#F5F5F5] transition"
+          className="absolute top-4 right-4 p-1.5 text-[#888888] hover:text-[#202020] rounded-sm hover:bg-[#F5F5F5] transition"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Brand Header */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center space-x-1 mb-1">
-            <span className="text-2xl font-black tracking-tight text-[#222222]">
-              book<span className="text-[#F84464]">in</span>
-            </span>
-            <div className="w-2 h-2 rounded-full bg-[#F84464]" />
-          </div>
-          <p className="text-xs text-[#666666]">
+        <div className="flex flex-col items-center mb-6">
+          <BookinLogo />
+          <p className="text-xs text-[#666666] mt-2">
             {mode === 'login' ? 'Sign in to access your bookings & tickets' : 'Create an account to book movie tickets'}
           </p>
         </div>
 
         {/* Tab switch */}
-        <div className="flex border-b border-[#E5E5E5] mb-5">
+        <div className="flex border-b border-[#DADADA] mb-5">
           <button
             type="button"
             className={`flex-1 pb-2 text-xs font-bold border-b-2 transition ${
               mode === 'login'
-                ? 'border-[#F84464] text-[#F84464]'
-                : 'border-transparent text-[#666666] hover:text-[#222222]'
+                ? 'border-[#D5A936] text-[#D5A936]'
+                : 'border-transparent text-[#666666] hover:text-[#202020]'
             }`}
             onClick={() => { setMode('login'); setError(''); }}
           >
@@ -89,8 +85,8 @@ export default function AuthModal() {
             type="button"
             className={`flex-1 pb-2 text-xs font-bold border-b-2 transition ${
               mode === 'register'
-                ? 'border-[#F84464] text-[#F84464]'
-                : 'border-transparent text-[#666666] hover:text-[#222222]'
+                ? 'border-[#D5A936] text-[#D5A936]'
+                : 'border-transparent text-[#666666] hover:text-[#202020]'
             }`}
             onClick={() => { setMode('register'); setError(''); }}
           >
@@ -99,47 +95,31 @@ export default function AuthModal() {
         </div>
 
         {error && (
-          <div className="mb-4 p-2.5 bg-[#FFF1F3] border border-[#F84464]/30 rounded text-[#F84464] text-xs">
+          <div className="mb-4 p-2.5 bg-red-50 border border-red-200 text-red-600 rounded-sm text-xs">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           {mode === 'register' && (
-            <>
-              <div>
-                <label className="block text-[#444444] font-medium mb-1">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
-                  />
-                </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#555555] mb-1">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="John Doe"
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] focus:outline-none focus:border-[#D5A936]"
+                />
               </div>
-
-              <div>
-                <label className="block text-[#444444] font-medium mb-1">Phone Number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="9876543210"
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
-                  />
-                </div>
-              </div>
-            </>
+            </div>
           )}
 
           <div>
-            <label className="block text-[#444444] font-medium mb-1">Email Address</label>
+            <label className="block text-[11px] font-medium text-[#555555] mb-1">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
               <input
@@ -147,14 +127,14 @@ export default function AuthModal() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
+                placeholder="name@example.com"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] focus:outline-none focus:border-[#D5A936]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[#444444] font-medium mb-1">Password</label>
+            <label className="block text-[11px] font-medium text-[#555555] mb-1">Password</label>
             <div className="relative">
               <Lock className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
               <input
@@ -163,46 +143,63 @@ export default function AuthModal() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] focus:outline-none focus:border-[#D5A936]"
               />
             </div>
           </div>
 
+          {mode === 'register' && (
+            <div>
+              <label className="block text-[11px] font-medium text-[#555555] mb-1">Mobile Phone (Optional)</label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] focus:outline-none focus:border-[#D5A936]"
+                />
+              </div>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition shadow-sm disabled:opacity-50 mt-2"
+            className="w-full py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#202020] font-bold rounded-sm text-xs transition disabled:opacity-50 mt-1 shadow-sm"
           >
-            {loading ? 'Processing...' : mode === 'login' ? 'Continue' : 'Create Account'}
+            {loading ? 'Processing...' : mode === 'login' ? 'Sign In to BookIN' : 'Create Free Account'}
           </button>
         </form>
 
-        {/* Quick Demo Credentials */}
-        <div className="mt-5 pt-4 border-t border-[#E5E5E5]">
-          <p className="text-[10px] text-[#888888] font-semibold uppercase tracking-wider mb-2">
-            One-Click Demo Fill:
-          </p>
-          <div className="grid grid-cols-3 gap-2">
+        {/* 1-Click Demo Accounts */}
+        <div className="mt-6 pt-5 border-t border-[#DADADA]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] uppercase font-bold text-[#888888] tracking-wider">Quick Demo Login</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#D5A936]" />
+          </div>
+          <div className="grid grid-cols-3 gap-1.5 text-[10px]">
             <button
               type="button"
               onClick={() => fillDemo('customer')}
-              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-[#444444] transition"
+              className="px-2 py-1.5 bg-[#F5F5F5] hover:bg-[#FBF6EA] border border-[#DADADA] hover:border-[#D5A936] rounded-sm font-semibold text-[#202020] transition"
             >
               Customer
             </button>
             <button
               type="button"
               onClick={() => fillDemo('admin')}
-              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-amber-700 transition"
+              className="px-2 py-1.5 bg-[#F5F5F5] hover:bg-[#FBF6EA] border border-[#DADADA] hover:border-[#D5A936] rounded-sm font-semibold text-[#202020] transition"
             >
-              Admin
+              Super Admin
             </button>
             <button
               type="button"
               onClick={() => fillDemo('theatre')}
-              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-sky-700 transition"
+              className="px-2 py-1.5 bg-[#F5F5F5] hover:bg-[#FBF6EA] border border-[#DADADA] hover:border-[#D5A936] rounded-sm font-semibold text-[#202020] transition"
             >
-              Theatre
+              Theatre Mgr
             </button>
           </div>
         </div>

@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
   // Create Theatre Form
   const [theatreForm, setTheatreForm] = useState({
     name: '',
-    city: 'Mumbai',
+    city: 'Ahmedabad',
     address: ''
   });
 
@@ -114,18 +114,18 @@ export default function AdminDashboardPage() {
 
   if (!isAdmin && !isTheatreAdmin) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-[#F5F5F5]">
-        <div className="bg-white border border-[#E5E5E5] rounded-md p-8 sm:p-10 text-center max-w-md w-full shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-rose-50 text-[#F84464] mx-auto flex items-center justify-center mb-4 border border-rose-100">
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-[#FFFFFF]">
+        <div className="bg-white border border-[#DADADA] rounded-sm p-8 sm:p-10 text-center max-w-md w-full shadow-subtle">
+          <div className="w-16 h-16 rounded-full bg-[#FBF6EA] text-[#D5A936] mx-auto flex items-center justify-center mb-4 border border-[#E2C36E]">
             <Shield className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-[#222222]">Administrative Access Restricted</h2>
+          <h2 className="text-xl font-bold text-[#202020]">Administrative Access Restricted</h2>
           <p className="text-sm text-[#666666] mt-2 mb-6">
             You must be signed in with an Administrator or Theatre Manager account to view this management console.
           </p>
           <button
             onClick={() => openAuthModal('login')}
-            className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm"
+            className="w-full py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-sm transition shadow-sm"
           >
             Sign In with Admin Account
           </button>
@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
         }
       });
       setStatusMsg(`Theatre '${theatreForm.name}' created successfully!`);
-      setTheatreForm({ name: '', city: 'Mumbai', address: '' });
+      setTheatreForm({ name: '', city: 'Ahmedabad', address: '' });
       loadDashboardData();
     } catch (err) {
       setErrorMsg(err.message);
@@ -262,25 +262,25 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] pb-24 pt-6">
+    <div className="min-h-screen bg-[#FFFFFF] pb-24 pt-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Control Bar */}
-        <div className="bg-white border border-[#E5E5E5] rounded-md p-6 mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white border border-[#DADADA] rounded-sm p-6 mb-6 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-3.5">
-            <div className="w-12 h-12 rounded-md bg-rose-50 text-[#F84464] border border-rose-100 flex items-center justify-center">
-              <Shield className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-sm bg-[#FBF6EA] text-[#D5A936] border border-[#E2C36E] flex items-center justify-center">
+              <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#222222]">BookIN Partner & Admin Hub</h1>
+              <h1 className="text-xl font-bold text-[#202020]">BookIN Partner & Admin Hub</h1>
               <p className="text-xs text-[#666666] mt-0.5">
-                Logged in as <span className="font-semibold text-[#222222]">{user?.fullName}</span> ({user?.roles?.join(', ')})
+                Logged in as <span className="font-semibold text-[#202020]">{user?.fullName}</span> ({user?.roles?.join(', ')})
               </p>
             </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex bg-[#F5F5F5] border border-[#E5E5E5] p-1 rounded text-xs font-semibold">
+          <div className="flex bg-[#F5F5F5] border border-[#DADADA] p-1 rounded-sm text-xs font-semibold">
             {[
               { id: 'overview', label: 'Overview' },
               { id: 'movie', label: 'Add Movie' },
@@ -290,10 +290,10 @@ export default function AdminDashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setStatusMsg(''); setErrorMsg(''); }}
-                className={`px-3.5 py-1.5 rounded transition ${
+                className={`px-3.5 py-1.5 rounded-sm transition ${
                   activeTab === tab.id
-                    ? 'bg-white text-[#F84464] shadow-sm font-bold border border-[#E5E5E5]'
-                    : 'text-[#666666] hover:text-[#222222]'
+                    ? 'bg-white text-[#D5A936] shadow-sm font-bold border border-[#DADADA]'
+                    : 'text-[#666666] hover:text-[#202020]'
                 }`}
               >
                 {tab.label}
@@ -304,15 +304,15 @@ export default function AdminDashboardPage() {
 
         {/* Status Alerts */}
         {statusMsg && (
-          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-xs flex items-center space-x-2">
+          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-sm text-emerald-800 text-xs flex items-center space-x-2">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
             <span className="font-medium">{statusMsg}</span>
           </div>
         )}
 
         {errorMsg && (
-          <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-md text-rose-800 text-xs flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-sm text-red-700 text-xs flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
             <span className="font-medium">{errorMsg}</span>
           </div>
         )}
@@ -321,51 +321,51 @@ export default function AdminDashboardPage() {
         {activeTab === 'overview' && stats && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Registered Users</span>
-                <p className="text-2xl font-bold text-[#222222] mt-1.5">{stats.totalUsers}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Registered Users</span>
+                <p className="text-2xl font-bold text-[#202020] mt-1">{stats.totalUsers}</p>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Active Movies</span>
-                <p className="text-2xl font-bold text-[#F84464] mt-1.5">{stats.totalMovies}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Active Movies</span>
+                <p className="text-2xl font-bold text-[#D5A936] mt-1">{stats.totalMovies}</p>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Theatres</span>
-                <p className="text-2xl font-bold text-[#0078FF] mt-1.5">{stats.totalTheatres}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Theatres</span>
+                <p className="text-2xl font-bold text-[#26343C] mt-1">{stats.totalTheatres}</p>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Total Shows</span>
-                <p className="text-2xl font-bold text-[#1EA83C] mt-1.5">{stats.totalShows}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Total Shows</span>
+                <p className="text-2xl font-bold text-[#202020] mt-1">{stats.totalShows}</p>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Bookings Made</span>
-                <p className="text-2xl font-bold text-[#FA8C16] mt-1.5">{stats.totalBookings}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Bookings Made</span>
+                <p className="text-2xl font-bold text-[#D5A936] mt-1">{stats.totalBookings}</p>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
-                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Gross Revenue</span>
-                <p className="text-2xl font-bold text-[#222222] mt-1.5">₹{stats.totalRevenue?.toFixed(0)}</p>
+              <div className="bg-white border border-[#DADADA] p-4 rounded-sm shadow-subtle">
+                <span className="text-[10px] text-[#666666] uppercase tracking-wider font-semibold">Gross Revenue</span>
+                <p className="text-2xl font-bold text-[#202020] mt-1">₹{stats.totalRevenue?.toFixed(0)}</p>
               </div>
             </div>
 
             {/* Theatre & Screen Status Overview */}
-            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 shadow-sm">
-              <h2 className="text-base font-bold text-[#222222] mb-4">Configured Theatres & Screens</h2>
+            <div className="bg-white border border-[#DADADA] rounded-sm p-6 shadow-subtle">
+              <h2 className="text-base font-bold text-[#202020] mb-4">Configured Theatres & Screens</h2>
               <div className="space-y-3">
                 {theatresList.length === 0 ? (
                   <p className="text-sm text-[#666666]">No theatres registered yet.</p>
                 ) : (
                   theatresList.map((t) => (
-                    <div key={t.id} className="p-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div key={t.id} className="p-4 bg-[#FAFAFA] border border-[#DADADA] rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <h3 className="font-bold text-[#222222] text-sm">{t.name} <span className="text-xs font-normal text-[#666666]">({t.city})</span></h3>
+                        <h3 className="font-bold text-[#202020] text-sm">{t.name} <span className="text-xs font-normal text-[#666666]">({t.city})</span></h3>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {t.screens?.map((sc) => (
-                            <span key={sc.id} className="px-2.5 py-1 rounded bg-white border border-[#E5E5E5] text-xs text-[#444444] font-medium">
+                            <span key={sc.id} className="px-2.5 py-1 rounded-sm bg-white border border-[#DADADA] text-xs text-[#444444] font-medium">
                               {sc.name} • {sc.totalSeats} seats ({sc.screenType})
                             </span>
                           ))}
@@ -381,9 +381,9 @@ export default function AdminDashboardPage() {
 
         {/* Tab 2: Create Movie */}
         {activeTab === 'movie' && (
-          <div className="bg-white border border-[#E5E5E5] rounded-md p-6 sm:p-8 max-w-2xl shadow-sm">
-            <h2 className="text-lg font-bold text-[#222222] mb-5 flex items-center space-x-2">
-              <Film className="w-5 h-5 text-[#F84464]" />
+          <div className="bg-white border border-[#DADADA] rounded-sm p-6 sm:p-8 max-w-2xl shadow-subtle">
+            <h2 className="text-base font-bold text-[#202020] mb-5 flex items-center space-x-2">
+              <Film className="w-5 h-5 text-[#D5A936]" />
               <span>Add New Movie Release</span>
             </h2>
 
@@ -396,7 +396,7 @@ export default function AdminDashboardPage() {
                   value={movieForm.title}
                   onChange={(e) => setMovieForm({ ...movieForm, title: e.target.value })}
                   placeholder="e.g. Gladiator II"
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
@@ -408,7 +408,7 @@ export default function AdminDashboardPage() {
                     required
                     value={movieForm.language}
                     onChange={(e) => setMovieForm({ ...movieForm, language: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
                 <div>
@@ -418,7 +418,7 @@ export default function AdminDashboardPage() {
                     required
                     value={movieForm.durationMinutes}
                     onChange={(e) => setMovieForm({ ...movieForm, durationMinutes: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
               </div>
@@ -431,7 +431,7 @@ export default function AdminDashboardPage() {
                     required
                     value={movieForm.releaseDate}
                     onChange={(e) => setMovieForm({ ...movieForm, releaseDate: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
                 <div>
@@ -439,7 +439,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={movieForm.certification}
                     onChange={(e) => setMovieForm({ ...movieForm, certification: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   >
                     <option value="U">U (Universal)</option>
                     <option value="UA">UA (Parental Guidance)</option>
@@ -455,7 +455,7 @@ export default function AdminDashboardPage() {
                   value={movieForm.genreNames}
                   onChange={(e) => setMovieForm({ ...movieForm, genreNames: e.target.value })}
                   placeholder="Action, Sci-Fi, Drama"
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
@@ -466,7 +466,7 @@ export default function AdminDashboardPage() {
                   value={movieForm.description}
                   onChange={(e) => setMovieForm({ ...movieForm, description: e.target.value })}
                   placeholder="Movie plot synopsis..."
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
@@ -477,13 +477,13 @@ export default function AdminDashboardPage() {
                   value={movieForm.posterUrl}
                   onChange={(e) => setMovieForm({ ...movieForm, posterUrl: e.target.value })}
                   placeholder="https://..."
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm mt-2"
+                className="w-full py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-sm transition shadow-sm mt-2"
               >
                 Create Movie
               </button>
@@ -494,9 +494,9 @@ export default function AdminDashboardPage() {
         {/* Tab 3: Create Theatre & Screen */}
         {activeTab === 'theatre' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 space-y-4 shadow-sm">
-              <h2 className="text-base font-bold text-[#222222] flex items-center space-x-2">
-                <Building2 className="w-5 h-5 text-[#0078FF]" />
+            <div className="bg-white border border-[#DADADA] rounded-sm p-6 space-y-4 shadow-subtle">
+              <h2 className="text-base font-bold text-[#202020] flex items-center space-x-2">
+                <Building2 className="w-5 h-5 text-[#D5A936]" />
                 <span>Register New Theatre</span>
               </h2>
 
@@ -509,7 +509,7 @@ export default function AdminDashboardPage() {
                     value={theatreForm.name}
                     onChange={(e) => setTheatreForm({ ...theatreForm, name: e.target.value })}
                     placeholder="e.g. INOX: R-City Mall"
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
 
@@ -520,7 +520,7 @@ export default function AdminDashboardPage() {
                     required
                     value={theatreForm.city}
                     onChange={(e) => setTheatreForm({ ...theatreForm, city: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
 
@@ -532,13 +532,13 @@ export default function AdminDashboardPage() {
                     value={theatreForm.address}
                     onChange={(e) => setTheatreForm({ ...theatreForm, address: e.target.value })}
                     placeholder="Full street address..."
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#0078FF] hover:bg-[#0066d6] text-white font-semibold rounded text-sm transition shadow-sm"
+                  className="w-full py-2.5 bg-[#26343C] hover:bg-[#1D282E] text-white font-semibold rounded-sm text-sm transition shadow-sm"
                 >
                   Create Theatre
                 </button>
@@ -546,9 +546,9 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Add Screen to Theatre */}
-            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 space-y-4 shadow-sm">
-              <h2 className="text-base font-bold text-[#222222] flex items-center space-x-2">
-                <PlusCircle className="w-5 h-5 text-[#1EA83C]" />
+            <div className="bg-white border border-[#DADADA] rounded-sm p-6 space-y-4 shadow-subtle">
+              <h2 className="text-base font-bold text-[#202020] flex items-center space-x-2">
+                <PlusCircle className="w-5 h-5 text-[#D5A936]" />
                 <span>Add Screen to Theatre</span>
               </h2>
 
@@ -558,7 +558,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={screenForm.theatreId}
                     onChange={(e) => setScreenForm({ ...screenForm, theatreId: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   >
                     {theatresList.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -576,7 +576,7 @@ export default function AdminDashboardPage() {
                     value={screenForm.name}
                     onChange={(e) => setScreenForm({ ...screenForm, name: e.target.value })}
                     placeholder="e.g. Screen 1 - IMAX"
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
 
@@ -585,7 +585,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={screenForm.screenType}
                     onChange={(e) => setScreenForm({ ...screenForm, screenType: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   >
                     <option value="Dolby Atmos 2D">Dolby Atmos 2D</option>
                     <option value="IMAX 3D">IMAX 3D</option>
@@ -596,7 +596,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#1EA83C] hover:bg-[#188c31] text-white font-semibold rounded text-sm transition shadow-sm"
+                  className="w-full py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-sm transition shadow-sm"
                 >
                   Create Screen & Layout
                 </button>
@@ -607,9 +607,9 @@ export default function AdminDashboardPage() {
 
         {/* Tab 4: Schedule Show */}
         {activeTab === 'show' && (
-          <div className="bg-white border border-[#E5E5E5] rounded-md p-6 sm:p-8 max-w-2xl shadow-sm">
-            <h2 className="text-lg font-bold text-[#222222] mb-5 flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-[#FA8C16]" />
+          <div className="bg-white border border-[#DADADA] rounded-sm p-6 sm:p-8 max-w-2xl shadow-subtle">
+            <h2 className="text-base font-bold text-[#202020] mb-5 flex items-center space-x-2">
+              <Calendar className="w-5 h-5 text-[#D5A936]" />
               <span>Schedule New Movie Show</span>
             </h2>
 
@@ -619,7 +619,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={showForm.movieId}
                   onChange={(e) => setShowForm({ ...showForm, movieId: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 >
                   {moviesList.map((m) => (
                     <option key={m.id} value={m.id}>{m.title}</option>
@@ -632,7 +632,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={showForm.screenId}
                   onChange={(e) => setShowForm({ ...showForm, screenId: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 >
                   {theatresList.flatMap((t) =>
                     (t.screens || []).map((sc) => (
@@ -651,7 +651,7 @@ export default function AdminDashboardPage() {
                   required
                   value={showForm.startTime}
                   onChange={(e) => setShowForm({ ...showForm, startTime: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                 />
               </div>
 
@@ -662,7 +662,7 @@ export default function AdminDashboardPage() {
                     type="number"
                     value={showForm.classicPrice}
                     onChange={(e) => setShowForm({ ...showForm, classicPrice: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
                 <div>
@@ -671,7 +671,7 @@ export default function AdminDashboardPage() {
                     type="number"
                     value={showForm.primePrice}
                     onChange={(e) => setShowForm({ ...showForm, primePrice: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
                 <div>
@@ -680,14 +680,14 @@ export default function AdminDashboardPage() {
                     type="number"
                     value={showForm.reclinerPrice}
                     onChange={(e) => setShowForm({ ...showForm, reclinerPrice: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#DADADA] rounded-sm text-sm text-[#202020] focus:outline-none focus:border-[#D5A936]"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm mt-2"
+                className="w-full py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-sm transition shadow-sm mt-2"
               >
                 Schedule Show & Initialize Seats
               </button>

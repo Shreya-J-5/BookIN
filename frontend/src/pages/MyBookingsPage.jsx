@@ -62,7 +62,7 @@ export default function MyBookingsPage() {
   }, [isAuthenticated]);
 
   const handleCancelBooking = async (bookingId) => {
-    if (!confirm('Are you sure you want to cancel this booking? A Rs. 50 cancellation fee applies.')) {
+    if (!confirm('Are you sure you want to cancel this booking? A ₹50 cancellation fee applies.')) {
       return;
     }
 
@@ -79,7 +79,7 @@ export default function MyBookingsPage() {
         }
       `;
       const data = await graphqlRequest(mutation, { bookingId });
-      setActionMsg(`Booking cancelled. Refund of Rs. ${data.cancelBooking.refundAmount.toFixed(2)} initiated.`);
+      setActionMsg(`Booking cancelled. Refund of ₹${data.cancelBooking.refundAmount.toFixed(2)} initiated.`);
       
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? { ...b, status: 'CANCELLED' } : b))
@@ -93,145 +93,148 @@ export default function MyBookingsPage() {
 
   if (loading) {
     return (
-      <div className="bg-[#F5F5F5] min-h-screen py-32 text-center text-[#888888]">
-        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="bg-[#FFFFFF] min-h-screen py-32 text-center text-[#666666]">
+        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Loading your purchase history...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen pb-24 pt-6">
+    <div className="bg-[#FFFFFF] min-h-screen pb-24 pt-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E5] mb-6">
+        <div className="pb-4 border-b border-[#DADADA] mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#222222] flex items-center space-x-2">
-              <Ticket className="w-5 h-5 text-[#F84464]" />
-              <span>Your Orders & Tickets</span>
-            </h1>
+            <h1 className="text-xl font-bold text-[#202020]">Your Purchase History</h1>
             <p className="text-xs text-[#666666] mt-0.5">
-              Manage your confirmed movie tickets & cancellations
+              Manage your confirmed tickets and view M-Ticket passes.
             </p>
           </div>
           <Link
             to="/"
-            className="px-3.5 py-1.5 bg-white border border-[#E5E5E5] text-[#222222] hover:bg-[#F9F9F9] rounded text-xs font-semibold transition"
+            className="text-xs font-bold text-[#D5A936] hover:underline"
           >
-            Explore Movies
+            Explore Movies →
           </Link>
         </div>
 
         {actionMsg && (
-          <div className="mb-5 p-3 bg-[#EAFBF0] border border-[#BDEECF] rounded text-[#116928] text-xs">
-            {actionMsg}
+          <div className="mb-6 p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-emerald-800 text-xs flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+            <span>{actionMsg}</span>
           </div>
         )}
 
         {/* Bookings List */}
         {bookings.length === 0 ? (
-          <div className="bg-white border border-[#E5E5E5] rounded-lg p-10 text-center text-[#888888] shadow-bms">
-            <Film className="w-10 h-10 text-[#CCCCCC] mx-auto mb-2" />
-            <h3 className="font-bold text-[#222222] text-sm">No Bookings Yet</h3>
-            <p className="text-xs text-[#777777] mt-1 mb-5">
-              You haven't purchased any tickets yet. Catch the latest blockbuster now!
+          <div className="bg-white border border-[#DADADA] rounded-sm p-12 text-center">
+            <Ticket className="w-12 h-12 text-[#DADADA] mx-auto mb-3" />
+            <h3 className="text-base font-bold text-[#202020]">No Orders Found</h3>
+            <p className="text-xs text-[#666666] mt-1 mb-5">
+              You haven't booked any movie tickets yet.
             </p>
             <Link
               to="/"
-              className="px-5 py-2 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition"
+              className="px-5 py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] text-xs font-bold rounded-sm transition shadow-sm"
             >
               Browse Movies
             </Link>
           </div>
         ) : (
           <div className="space-y-4">
-            {bookings.map((b) => (
-              <div
-                key={b.id}
-                className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-3 border-b border-[#F0F0F0]">
-                  <div className="flex items-start space-x-3.5">
-                    {b.moviePosterUrl && (
+            {bookings.map((booking) => {
+              const isConfirmed = booking.status === 'CONFIRMED';
+              const showDate = booking.startTime
+                ? new Date(booking.startTime).toLocaleString('en-US', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })
+                : 'Upcoming';
+
+              return (
+                <div
+                  key={booking.id}
+                  className="bg-white border border-[#DADADA] rounded-sm p-5 hover:border-[#D5A936] transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                >
+                  <div className="flex items-start space-x-4">
+                    {booking.moviePosterUrl ? (
                       <img
-                        src={b.moviePosterUrl}
-                        alt={b.movieTitle}
-                        className="w-12 h-18 object-cover rounded border border-[#E5E5E5] flex-shrink-0"
+                        src={booking.moviePosterUrl}
+                        alt={booking.movieTitle}
+                        className="w-16 h-20 object-cover rounded-sm border border-[#DADADA] flex-shrink-0"
                       />
+                    ) : (
+                      <div className="w-16 h-20 bg-[#F5F5F5] rounded-sm border border-[#DADADA] flex items-center justify-center text-[#888888] flex-shrink-0">
+                        <Film className="w-6 h-6" />
+                      </div>
                     )}
-                    <div>
-                      <span className="text-[10px] font-bold text-[#888888] uppercase tracking-wider">
-                        Booking ID: <span className="font-mono text-[#222222]">{b.bookingRef}</span>
-                      </span>
-                      <h2 className="text-base font-bold text-[#222222] mt-0.5">{b.movieTitle}</h2>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-bold text-sm sm:text-base text-[#202020]">
+                          {booking.movieTitle}
+                        </h3>
+                        <span
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${
+                            isConfirmed
+                              ? 'bg-[#FBF6EA] text-[#D5A936] border border-[#E2C36E]'
+                              : 'bg-red-50 text-red-600 border border-red-200'
+                          }`}
+                        >
+                          {booking.status}
+                        </span>
+                      </div>
+
                       <p className="text-xs text-[#666666]">
-                        {b.theatreName} ({b.theatreCity}) • {b.screenName}
+                        {booking.theatreName} — {booking.screenName} ({booking.theatreCity})
+                      </p>
+
+                      <p className="text-xs text-[#202020] font-semibold">
+                        {showDate}
+                      </p>
+
+                      <p className="text-xs text-[#666666]">
+                        Seats: <span className="font-bold text-[#202020]">{booking.seats?.map((s) => `${s.row}${s.number}`).join(', ')}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="text-left sm:text-right">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                        b.status === 'CONFIRMED'
-                          ? 'bg-[#EAFBF0] text-[#116928] border border-[#BDEECF]'
-                          : 'bg-[#FFF1F3] text-[#F84464] border border-[#F84464]/30'
-                      }`}
-                    >
-                      {b.status}
+                  <div className="flex flex-col sm:items-end space-y-2 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#F5F5F5]">
+                    <span className="text-base font-black text-[#202020]">
+                      ₹{booking.totalAmount?.toFixed(2)}
                     </span>
-                    <p className="text-sm font-bold text-[#222222] mt-1">Rs. {b.totalAmount.toFixed(2)}</p>
+                    <span className="text-[10px] text-[#888888] font-mono">
+                      Ref: {booking.bookingRef}
+                    </span>
+
+                    <div className="flex space-x-2 pt-1">
+                      <Link
+                        to={`/confirmation/${booking.bookingRef}`}
+                        state={{ booking }}
+                        className="px-3 py-1 bg-white border border-[#DADADA] hover:border-[#D5A936] text-[#202020] hover:text-[#D5A936] text-xs font-semibold rounded-sm transition"
+                      >
+                        View Ticket
+                      </Link>
+
+                      {isConfirmed && (
+                        <button
+                          onClick={() => handleCancelBooking(booking.id)}
+                          disabled={cancellingId === booking.id}
+                          className="px-3 py-1 bg-white border border-red-200 hover:bg-red-50 text-red-600 text-xs font-semibold rounded-sm transition"
+                        >
+                          {cancellingId === booking.id ? 'Cancelling...' : 'Cancel'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-
-                {/* Show Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-[#555555]">
-                  <div>
-                    <span className="text-[#888888] block text-[11px]">Showtime</span>
-                    <span className="font-semibold text-[#222222]">
-                      {new Date(b.startTime).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-[#888888] block text-[11px]">Seats</span>
-                    <span className="font-bold text-[#F84464]">
-                      {b.seats?.map((s) => `${s.row}${s.number}`).join(', ')}
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-[#888888] block text-[11px]">Booked On</span>
-                    <span className="text-[#555555]">
-                      {new Date(b.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Footer Controls */}
-                <div className="pt-3 border-t border-[#F0F0F0] flex items-center justify-between text-xs">
-                  <Link
-                    to={`/confirmation/${b.bookingRef}`}
-                    state={{ booking: b }}
-                    className="font-bold text-[#F84464] hover:underline flex items-center"
-                  >
-                    <span>View QR E-Ticket</span>
-                    <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
-                  </Link>
-
-                  {b.status === 'CONFIRMED' && (
-                    <button
-                      onClick={() => handleCancelBooking(b.id)}
-                      disabled={cancellingId === b.id}
-                      className="px-3 py-1 bg-white hover:bg-[#FFF1F3] text-[#F84464] border border-[#F84464]/30 rounded text-xs font-semibold transition disabled:opacity-50"
-                    >
-                      {cancellingId === b.id ? 'Cancelling...' : 'Cancel Ticket'}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
