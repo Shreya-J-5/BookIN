@@ -7,28 +7,29 @@ export default {
   theme: {
     extend: {
       colors: {
+        navbar: '#1E232A',
         gold: {
-          DEFAULT: '#D5A936',
-          hover: '#C2982B',
-          light: '#FBF6EA',
-          border: '#E2C36E',
+          DEFAULT: '#E5B642',
+          hover: '#D4A333',
+          light: '#FEF9EE',
+          border: '#F2D38A',
         },
         charcoal: {
-          DEFAULT: '#26343C',
-          dark: '#1D282E',
-          light: '#31424C',
-          border: '#3A4C57',
+          DEFAULT: '#1E232A',
+          dark: '#14181E',
+          light: '#2B323C',
+          border: '#333C48',
         },
         ink: {
-          primary: '#202020',
-          secondary: '#666666',
-          muted: '#8E8E8E',
+          primary: '#1E232A',
+          secondary: '#64748B',
+          muted: '#94A3B8',
         },
         surface: {
           white: '#FFFFFF',
-          light: '#F5F5F5',
-          border: '#DADADA',
-          borderSubtle: '#EEEEEE',
+          light: '#F8F9FA',
+          border: '#E2E8F0',
+          borderSubtle: '#EDF2F7',
         }
       },
       fontFamily: {
@@ -36,14 +37,18 @@ export default {
       },
       boxShadow: {
         'subtle': '0 1px 3px rgba(0,0,0,0.05)',
-        'card': '0 1px 4px rgba(0,0,0,0.06)',
+        'card': '0 2px 6px rgba(0,0,0,0.06)',
+        'dropdown': '0 8px 24px rgba(0,0,0,0.12)',
       },
       borderRadius: {
         'none': '0',
-        'sm': '2px',
-        DEFAULT: '3px',
-        'md': '4px',
-        'lg': '6px',
+        'sm': '3px',
+        DEFAULT: '4px',
+        'md': '6px',
+        'lg': '8px',
+        'xl': '12px',
+        '2xl': '16px',
+        'full': '9999px',
       }
     },
   },

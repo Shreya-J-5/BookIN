@@ -126,7 +126,7 @@ export default function CheckoutPage() {
           contact: user?.phone || '9876543210'
         },
         theme: {
-          color: '#D5A936'
+          color: '#E5B642'
         },
         handler: async function (response) {
           await verifyAndFinalize(
@@ -145,7 +145,6 @@ export default function CheckoutPage() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } else {
-      // Sandbox Simulator fallback for test credentials
       const mockPaymentId = `pay_${Date.now()}`;
       const mockSignature = `mock_sig_${Date.now()}`;
       await verifyAndFinalize(paymentOrder.orderId, mockPaymentId, mockSignature);
@@ -205,41 +204,41 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#666666] bg-[#FFFFFF]">
-        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="min-h-screen py-32 text-center text-[#64748B] bg-[#F8F9FA]">
+        <div className="w-8 h-8 border-2 border-[#E5B642] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Securing payment order...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FFFFFF] min-h-screen pb-24 pt-6">
+    <div className="bg-[#F8F9FA] min-h-screen pb-24 pt-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Link */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center space-x-1 text-xs text-[#666666] hover:text-[#202020] transition mb-4"
+          className="flex items-center space-x-1 text-xs text-[#64748B] hover:text-[#1E232A] transition mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Change Seats</span>
         </button>
 
         {/* 10-Minute Lock Timer Bar */}
-        <div className="bg-[#FBF6EA] border border-[#E2C36E] rounded-sm p-3 mb-6 flex items-center justify-between">
+        <div className="bg-[#FEF9EE] border border-[#F2D38A] rounded-xl p-3 mb-6 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <Clock className="w-4 h-4 text-[#D5A936] animate-pulse flex-shrink-0" />
-            <p className="text-xs text-[#202020] font-medium">
+            <Clock className="w-4 h-4 text-[#E5B642] animate-pulse flex-shrink-0" />
+            <p className="text-xs text-[#1E232A] font-medium">
               Seats locked for you. Complete payment before the timer expires.
             </p>
           </div>
-          <span className="font-mono font-bold text-xs text-[#202020] bg-white px-2 py-0.5 rounded-sm border border-[#E2C36E]">
+          <span className="font-mono font-bold text-xs text-[#1E232A] bg-white px-2.5 py-0.5 rounded-md border border-[#F2D38A]">
             {timeFormatted}
           </span>
         </div>
 
         {errorMsg && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-sm text-red-600 text-xs flex items-center space-x-2">
+          <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
@@ -251,20 +250,20 @@ export default function CheckoutPage() {
           <div className="md:col-span-2 space-y-4">
             
             {/* Ticket Summary Box */}
-            <div className="bg-white border border-[#DADADA] rounded-sm p-5 shadow-subtle space-y-3">
-              <h2 className="text-sm font-bold text-[#202020] uppercase tracking-wider pb-2 border-b border-[#F5F5F5] flex items-center space-x-1.5">
-                <Ticket className="w-4 h-4 text-[#D5A936]" />
+            <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-subtle space-y-3.5">
+              <h2 className="text-sm font-bold text-[#1E232A] uppercase tracking-wider pb-2 border-b border-[#F1F5F9] flex items-center space-x-1.5">
+                <Ticket className="w-4 h-4 text-[#E5B642]" />
                 <span>Ticket Summary</span>
               </h2>
 
               <div>
-                <h3 className="text-base font-bold text-[#202020]">
+                <h3 className="text-base font-bold text-[#1E232A]">
                   {show?.movie?.title || 'Selected Movie'}
                 </h3>
-                <p className="text-xs text-[#666666] mt-0.5">
+                <p className="text-xs text-[#64748B] mt-0.5">
                   {show?.screen?.theatre?.name} — {show?.screen?.name}
                 </p>
-                <p className="text-xs text-[#666666] mt-0.5">
+                <p className="text-xs text-[#64748B] mt-0.5">
                   {show?.startTime ? new Date(show.startTime).toLocaleString('en-US', {
                     weekday: 'short',
                     day: 'numeric',
@@ -275,13 +274,13 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#F5F5F5] flex items-center justify-between text-xs">
+              <div className="pt-3 border-t border-[#F1F5F9] flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-[#666666]">Selected Seats: </span>
-                  <span className="font-bold text-[#202020]">
+                  <span className="text-[#64748B]">Selected Seats: </span>
+                  <span className="font-bold text-[#1E232A]">
                     {reservation?.seatLabels?.join(', ') || 'Seats Reserved'}
                   </span>
-                  <span className="text-[#888888] ml-1">
+                  <span className="text-[#94A3B8] ml-1">
                     ({reservation?.reservedSeatsCount || 1} Tickets)
                   </span>
                 </div>
@@ -289,9 +288,9 @@ export default function CheckoutPage() {
             </div>
 
             {/* Promo Code Box */}
-            <div className="bg-white border border-[#DADADA] rounded-sm p-5 shadow-subtle">
-              <h3 className="text-xs font-bold text-[#202020] uppercase tracking-wider mb-2 flex items-center space-x-1.5">
-                <Tag className="w-3.5 h-3.5 text-[#D5A936]" />
+            <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-subtle">
+              <h3 className="text-xs font-bold text-[#1E232A] uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                <Tag className="w-3.5 h-3.5 text-[#E5B642]" />
                 <span>Apply Promotional Coupon</span>
               </h3>
               
@@ -301,11 +300,11 @@ export default function CheckoutPage() {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                   placeholder="Enter code e.g. WELCOME50"
-                  className="flex-1 px-3 py-2 bg-white border border-[#DADADA] rounded-sm text-xs text-[#202020] uppercase tracking-wider focus:outline-none focus:border-[#D5A936]"
+                  className="flex-1 px-3.5 py-2 bg-[#F8F9FA] border border-[#E2E8F0] rounded-lg text-xs text-[#1E232A] uppercase tracking-wider focus:outline-none focus:border-[#E5B642]"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-white border border-[#DADADA] hover:border-[#D5A936] text-[#202020] hover:text-[#D5A936] text-xs font-bold rounded-sm transition"
+                  className="px-4 py-2 bg-white border border-[#E2E8F0] hover:border-[#E5B642] text-[#1E232A] hover:text-[#E5B642] text-xs font-bold rounded-lg transition"
                 >
                   Apply
                 </button>
@@ -326,22 +325,22 @@ export default function CheckoutPage() {
             </div>
 
             {/* Trust Assurance Badge */}
-            <div className="p-3.5 bg-[#F5F5F5] border border-[#DADADA] rounded-sm flex items-center space-x-3 text-xs text-[#555555]">
-              <ShieldCheck className="w-5 h-5 text-[#D5A936] flex-shrink-0" />
-              <span>Safe & Secure 256-bit encrypted transaction with instant ticket delivery.</span>
+            <div className="p-3.5 bg-white border border-[#E2E8F0] rounded-xl flex items-center space-x-3 text-xs text-[#64748B]">
+              <ShieldCheck className="w-5 h-5 text-[#E5B642] flex-shrink-0" />
+              <span>Safe & Secure 256-bit encrypted checkout with instant ticket confirmation.</span>
             </div>
 
           </div>
 
           {/* Right Col: Price Breakdown & Payment CTA */}
           <div className="space-y-4">
-            <div className="bg-white border border-[#DADADA] rounded-sm p-5 shadow-subtle space-y-3.5">
-              <h3 className="text-xs font-bold text-[#202020] uppercase tracking-wider pb-2 border-b border-[#F5F5F5]">
+            <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-subtle space-y-4">
+              <h3 className="text-xs font-bold text-[#1E232A] uppercase tracking-wider pb-2 border-b border-[#F1F5F9]">
                 Payment Breakdown
               </h3>
 
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between text-[#555555]">
+              <div className="space-y-2.5 text-xs">
+                <div className="flex justify-between text-[#64748B]">
                   <span>Tickets Subtotal</span>
                   <span>₹{paymentOrder?.subtotal?.toFixed(2) || '0.00'}</span>
                 </div>
@@ -353,12 +352,12 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <div className="flex justify-between text-[#555555]">
+                <div className="flex justify-between text-[#64748B]">
                   <span>Convenience Fee (incl. GST)</span>
                   <span>₹{((paymentOrder?.convenienceFee || 0) + (paymentOrder?.taxAmount || 0)).toFixed(2)}</span>
                 </div>
 
-                <div className="pt-3 border-t border-[#DADADA] flex justify-between items-center text-sm font-black text-[#202020]">
+                <div className="pt-3 border-t border-[#E2E8F0] flex justify-between items-center text-sm font-black text-[#1E232A]">
                   <span>Total Amount</span>
                   <span className="text-lg">₹{paymentOrder?.amount?.toFixed(2) || '0.00'}</span>
                 </div>
@@ -368,7 +367,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePayment}
                 disabled={processingPayment}
-                className="w-full mt-2 py-3 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-xs transition shadow-sm disabled:opacity-50 flex items-center justify-center space-x-2"
+                className="w-full mt-2 py-3 bg-[#E5B642] hover:bg-[#D4A333] text-[#1E232A] font-bold rounded-full text-xs sm:text-sm transition shadow-sm disabled:opacity-50 flex items-center justify-center space-x-2"
               >
                 <CreditCard className="w-4 h-4" />
                 <span>
@@ -378,7 +377,7 @@ export default function CheckoutPage() {
                 </span>
               </button>
 
-              <p className="text-[10px] text-[#888888] text-center pt-1">
+              <p className="text-[10px] text-[#94A3B8] text-center pt-1">
                 By clicking pay, you agree to BookIN terms & cancellation policy.
               </p>
             </div>

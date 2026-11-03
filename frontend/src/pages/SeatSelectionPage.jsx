@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { graphqlRequest } from '../services/graphqlClient';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Clock, AlertCircle, ChevronRight, X } from 'lucide-react';
+import { ArrowLeft, Clock, AlertCircle, ChevronRight } from 'lucide-react';
 
 export default function SeatSelectionPage() {
   const { showId } = useParams();
@@ -19,7 +19,6 @@ export default function SeatSelectionPage() {
 
   const socketRef = useRef(null);
 
-  // Load Show & Seat Inventory
   useEffect(() => {
     async function loadShowData() {
       setLoading(true);
@@ -73,7 +72,6 @@ export default function SeatSelectionPage() {
     loadShowData();
   }, [showId]);
 
-  // Establish WebSocket Connection for Real-Time Seat Synchronization
   useEffect(() => {
     if (!showId) return;
 
@@ -137,7 +135,6 @@ export default function SeatSelectionPage() {
 
   const sortedRows = Object.values(rowsMap).sort((a, b) => a.row.localeCompare(b.row));
 
-  // Toggle seat selection
   const toggleSeatSelection = (seat) => {
     if (seat.status !== 'AVAILABLE') return;
 
@@ -155,7 +152,6 @@ export default function SeatSelectionPage() {
   const selectedSeats = showSeats.filter((ss) => selectedSeatIds.includes(ss.seatId));
   const subtotal = selectedSeats.reduce((acc, curr) => acc + curr.price, 0);
 
-  // Reserve Seats Mutation
   const handleProceedToReserve = async () => {
     if (!isAuthenticated) {
       openAuthModal('login');
@@ -187,7 +183,6 @@ export default function SeatSelectionPage() {
 
       const reservation = data.reserveSeats;
 
-      // Broadcast via WebSocket
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
         selectedSeatIds.forEach((sid) => {
           socketRef.current.send(
@@ -218,8 +213,8 @@ export default function SeatSelectionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#666666] bg-[#FFFFFF]">
-        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="min-h-screen py-32 text-center text-[#64748B] bg-[#F8F9FA]">
+        <div className="w-8 h-8 border-2 border-[#E5B642] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Loading seat map...</p>
       </div>
     );
@@ -227,9 +222,9 @@ export default function SeatSelectionPage() {
 
   if (!show) {
     return (
-      <div className="min-h-screen py-32 text-center text-[#202020] bg-[#FFFFFF]">
+      <div className="min-h-screen py-32 text-center text-[#1E232A] bg-[#F8F9FA]">
         <h2 className="text-xl font-bold">Show Not Found</h2>
-        <Link to="/" className="text-[#D5A936] text-xs font-semibold underline mt-2 inline-block">
+        <Link to="/" className="text-[#E5B642] text-xs font-semibold underline mt-2 inline-block">
           Return to Movies
         </Link>
       </div>
@@ -243,32 +238,32 @@ export default function SeatSelectionPage() {
   });
 
   return (
-    <div className="bg-[#FFFFFF] min-h-screen pb-32">
+    <div className="bg-[#F8F9FA] min-h-screen pb-32">
       
-      {/* 1. Clean Top Header Bar */}
-      <div className="bg-white border-b border-[#DADADA] py-3 sticky top-14 sm:top-16 z-30 shadow-subtle">
+      {/* 1. Charcoal Top Header Bar */}
+      <div className="bg-[#1E232A] text-white py-3.5 sticky top-16 sm:top-20 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}
-              className="p-1.5 rounded-sm hover:bg-[#F5F5F5] border border-[#DADADA] text-[#202020] transition"
+              className="p-1.5 rounded-full hover:bg-white/10 text-white transition"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-sm sm:text-base font-bold text-[#202020]">
+              <h1 className="text-sm sm:text-base font-bold text-white">
                 {show.movie.title}
               </h1>
-              <p className="text-xs text-[#666666]">
-                {show.screen.theatre.name} | {startTimeStr} | {show.screen.screenType}
+              <p className="text-xs text-white/70">
+                {show.screen.theatre.name} • {startTimeStr} • {show.screen.screenType}
               </p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#D5A936]' : 'bg-amber-400'}`} />
-            <span className="text-[11px] text-[#666666] hidden sm:inline">
-              {wsConnected ? 'Real-Time Sync Active' : 'Connecting Sync...'}
+            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#E5B642]' : 'bg-amber-400'}`} />
+            <span className="text-[11px] text-white/70 hidden sm:inline">
+              {wsConnected ? 'Live Seat Sync' : 'Connecting...'}
             </span>
           </div>
         </div>
@@ -277,16 +272,14 @@ export default function SeatSelectionPage() {
       {/* 2. Main Seat Layout Area */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
-        {/* Error notification */}
         {errorMsg && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-red-600 text-xs flex items-center space-x-2">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        {/* Seat Layout Box */}
-        <div className="bg-white border border-[#DADADA] rounded-sm p-6 sm:p-10 shadow-subtle">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 sm:p-10 shadow-card">
           
           {/* Seat Tiers & Rows */}
           <div className="space-y-8">
@@ -295,15 +288,13 @@ export default function SeatSelectionPage() {
 
               return (
                 <div key={row} className="space-y-2">
-                  {/* Category Header */}
-                  <div className="text-[10px] font-bold text-[#666666] uppercase tracking-wider pb-1 border-b border-[#F5F5F5] flex justify-between items-center">
+                  <div className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider pb-1 border-b border-[#F1F5F9] flex justify-between items-center">
                     <span>{tier}</span>
                     <span>₹{price.toFixed(2)}</span>
                   </div>
 
-                  {/* Seats in this row */}
                   <div className="flex items-center justify-center space-x-2 sm:space-x-3 py-1">
-                    <span className="w-5 text-center text-xs font-bold text-[#666666]">{row}</span>
+                    <span className="w-5 text-center text-xs font-bold text-[#94A3B8]">{row}</span>
 
                     <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap justify-center">
                       {seats
@@ -316,20 +307,15 @@ export default function SeatSelectionPage() {
 
                           let seatClasses = '';
                           if (isSelected) {
-                            // Selected: Gold background, dark text
-                            seatClasses = 'bg-[#D5A936] border-[#D5A936] text-[#1A1A1A] font-bold shadow-sm';
+                            seatClasses = 'bg-[#E5B642] border-[#E5B642] text-[#1E232A] font-bold shadow-xs';
                           } else if (isBooked) {
-                            // Booked: Grey
-                            seatClasses = 'bg-[#EAEAEA] border-[#DADADA] text-[#AAAAAA] cursor-not-allowed';
+                            seatClasses = 'bg-[#E2E8F0] border-[#CBD5E1] text-[#94A3B8] cursor-not-allowed';
                           } else if (isLocked) {
-                            // Locked: Light amber
                             seatClasses = 'bg-amber-50 border-amber-300 text-amber-700 cursor-not-allowed';
                           } else if (isPremium) {
-                            // Premium: Subtle gold border
-                            seatClasses = 'bg-white border-[#E2C36E] text-[#202020] hover:bg-[#FBF6EA] hover:border-[#D5A936]';
+                            seatClasses = 'bg-white border-[#F2D38A] text-[#1E232A] hover:bg-[#FEF9EE] hover:border-[#E5B642]';
                           } else {
-                            // Available: White with subtle border
-                            seatClasses = 'bg-white border-[#DADADA] text-[#202020] hover:border-[#D5A936] hover:text-[#D5A936]';
+                            seatClasses = 'bg-white border-[#CBD5E1] text-[#1E232A] hover:border-[#E5B642] hover:text-[#E5B642]';
                           }
 
                           return (
@@ -337,7 +323,7 @@ export default function SeatSelectionPage() {
                               key={seat.id}
                               disabled={!isAvailable}
                               onClick={() => toggleSeatSelection(seat)}
-                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-sm border text-[11px] flex items-center justify-center font-medium transition ${seatClasses}`}
+                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md border text-[11px] flex items-center justify-center font-semibold transition ${seatClasses}`}
                               title={`Seat ${row}${seat.number} (${tier} - ₹${price})`}
                             >
                               {seat.number}
@@ -346,7 +332,7 @@ export default function SeatSelectionPage() {
                         })}
                     </div>
 
-                    <span className="w-5 text-center text-xs font-bold text-[#666666]">{row}</span>
+                    <span className="w-5 text-center text-xs font-bold text-[#94A3B8]">{row}</span>
                   </div>
                 </div>
               );
@@ -355,29 +341,29 @@ export default function SeatSelectionPage() {
 
           {/* Screen Indicator */}
           <div className="mt-16 text-center max-w-md mx-auto">
-            <div className="w-full h-1 bg-[#DADADA] rounded-full mx-auto" />
-            <p className="text-[10px] font-bold text-[#888888] uppercase tracking-widest mt-2">
+            <div className="w-full h-1 bg-[#CBD5E1] rounded-full mx-auto" />
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mt-2">
               All eyes this way please! (Screen)
             </p>
           </div>
 
           {/* Seat Legend */}
-          <div className="mt-10 pt-6 border-t border-[#F5F5F5] flex flex-wrap items-center justify-center gap-6 text-xs text-[#555555]">
+          <div className="mt-10 pt-6 border-t border-[#F1F5F9] flex flex-wrap items-center justify-center gap-6 text-xs text-[#64748B]">
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-white border border-[#DADADA]" />
+              <div className="w-5 h-5 rounded-md bg-white border border-[#CBD5E1]" />
               <span>Available</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-[#D5A936] border border-[#D5A936]" />
-              <span className="font-semibold text-[#202020]">Selected</span>
+              <div className="w-5 h-5 rounded-md bg-[#E5B642] border border-[#E5B642]" />
+              <span className="font-semibold text-[#1E232A]">Selected</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-[#EAEAEA] border border-[#DADADA]" />
+              <div className="w-5 h-5 rounded-md bg-[#E2E8F0] border border-[#CBD5E1]" />
               <span>Booked</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-5 h-5 rounded-sm bg-white border border-[#E2C36E]" />
-              <span>Premium (Recliner)</span>
+              <div className="w-5 h-5 rounded-md bg-white border border-[#F2D38A]" />
+              <span>Premium</span>
             </div>
           </div>
 
@@ -386,13 +372,13 @@ export default function SeatSelectionPage() {
 
       {/* 3. Bottom Sticky Checkout Bar */}
       {selectedSeatIds.length > 0 && (
-        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#DADADA] py-3.5 z-40 shadow-2xl animate-fade-in">
+        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#E2E8F0] py-3.5 z-40 shadow-dropdown animate-fade-in">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div>
-              <p className="text-xs text-[#666666]">
-                Seats: <span className="font-bold text-[#202020]">{selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')}</span>
+              <p className="text-xs text-[#64748B]">
+                Seats: <span className="font-bold text-[#1E232A]">{selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')}</span>
               </p>
-              <p className="text-lg font-black text-[#202020]">
+              <p className="text-lg font-black text-[#1E232A]">
                 ₹{subtotal.toFixed(2)}
               </p>
             </div>
@@ -400,7 +386,7 @@ export default function SeatSelectionPage() {
             <button
               onClick={handleProceedToReserve}
               disabled={reserving}
-              className="px-8 py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] font-bold rounded-sm text-xs transition shadow-sm disabled:opacity-50 flex items-center space-x-2"
+              className="px-8 py-2.5 bg-[#E5B642] hover:bg-[#D4A333] text-[#1E232A] font-bold rounded-full text-xs sm:text-sm transition shadow-sm disabled:opacity-50 flex items-center space-x-2"
             >
               <span>{reserving ? 'Reserving...' : `Pay ₹${subtotal.toFixed(2)}`}</span>
               <ChevronRight className="w-4 h-4" />

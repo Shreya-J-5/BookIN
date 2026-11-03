@@ -7,52 +7,59 @@ export default function Footer() {
   const { selectedCity } = useAuth();
 
   return (
-    <footer className="bg-[#26343C] text-[#A2B0B8] text-xs mt-16 border-t border-[#3A4C57]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <footer className="bg-[#1E232A] text-white/70 text-xs mt-16 border-t border-[#2B323C]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           
-          {/* Column 1: BookIN / About */}
+          {/* Column 1: Brand & Description */}
           <div>
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Footer</h5>
-            <ul className="space-y-1.5 text-xs text-[#A2B0B8]">
-              <li><Link to="/" className="hover:text-white transition">Home</Link></li>
-              <li><span className="hover:text-white cursor-pointer transition">About Us</span></li>
-              <li><span className="hover:text-white cursor-pointer transition">Terms of Service</span></li>
-              <li><span className="hover:text-white cursor-pointer transition">Privacy Policy</span></li>
-            </ul>
-          </div>
-
-          {/* Column 2: Events & Cinemas */}
-          <div>
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Events</h5>
-            <ul className="space-y-1.5 text-xs text-[#A2B0B8]">
-              <li><span className="hover:text-white cursor-pointer transition">Cinemas & Multiplexes</span></li>
-              <li><span className="hover:text-white cursor-pointer transition">Live Music & Plays</span></li>
-              <li><span className="hover:text-white cursor-pointer transition">Sports & Gaming</span></li>
-              <li><span className="hover:text-white cursor-pointer transition">Special Screenings</span></li>
-            </ul>
-          </div>
-
-          {/* Column 3: Connection & Discovery */}
-          <div className="sm:col-span-2 md:col-span-2">
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Connection</h5>
-            <p className="text-xs text-[#A2B0B8] mb-3 leading-relaxed">
-              Discover the latest releases and showtimes in <span className="text-white font-semibold">{selectedCity || 'your city'}</span>. Book tickets instantly with real-time seat locks and secure payment processing.
+            <BookinLogo variant="dark" size="default" />
+            <p className="text-xs text-white/60 mt-3 leading-relaxed">
+              Book your movie tickets, discover cinemas, and enjoy seamless seat reservations across India.
             </p>
-            <div className="flex flex-wrap gap-4 text-xs">
-              <span className="hover:text-white cursor-pointer transition">Contact Us</span>
-              <span className="text-[#4E626D]">|</span>
-              <span className="hover:text-white cursor-pointer transition">Help & FAQs</span>
-              <span className="text-[#4E626D]">|</span>
-              <span className="hover:text-white cursor-pointer transition">Partner With Us</span>
+          </div>
+
+          {/* Column 2: Navigation */}
+          <div>
+            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Explore</h5>
+            <ul className="space-y-2 text-xs text-white/70">
+              <li><Link to="/" className="hover:text-[#E5B642] transition">Movies</Link></li>
+              <li><Link to="/?category=cinemas" className="hover:text-[#E5B642] transition">Cinemas & Multiplexes</Link></li>
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Live Events</span></li>
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Sports & Tournaments</span></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Customer Care & Legal */}
+          <div>
+            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Support</h5>
+            <ul className="space-y-2 text-xs text-white/70">
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Help & FAQs</span></li>
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Terms & Conditions</span></li>
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Privacy Policy</span></li>
+              <li><span className="hover:text-[#E5B642] cursor-pointer transition">Cancellation Policy</span></li>
+            </ul>
+          </div>
+
+          {/* Column 4: Connection in selected city */}
+          <div>
+            <h5 className="text-white font-bold text-xs uppercase tracking-wider mb-3">Location</h5>
+            <p className="text-xs text-white/60 leading-relaxed mb-3">
+              Currently discovering shows in <span className="text-[#E5B642] font-semibold">{selectedCity || 'Ahmedabad'}</span>. Instant tickets delivered via QR pass.
+            </p>
+            <div className="flex space-x-3 text-xs text-white/60">
+              <span className="hover:text-[#E5B642] cursor-pointer transition">Facebook</span>
+              <span>•</span>
+              <span className="hover:text-[#E5B642] cursor-pointer transition">Twitter</span>
+              <span>•</span>
+              <span className="hover:text-[#E5B642] cursor-pointer transition">Instagram</span>
             </div>
           </div>
 
         </div>
 
-        {/* Bottom Logo & Copyright */}
-        <div className="pt-8 mt-8 border-t border-[#3A4C57] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#7E909A] gap-4">
-          <BookinLogo variant="dark" size="small" />
+        {/* Bottom Bar */}
+        <div className="pt-8 mt-8 border-t border-[#2B323C] flex flex-col sm:flex-row items-center justify-between text-[11px] text-white/50 gap-4">
           <p>© 2026 BookIN Entertainment Pvt. Ltd. All rights reserved.</p>
           <div className="flex space-x-4">
             <span className="hover:text-white cursor-pointer transition">Security</span>

@@ -93,35 +93,35 @@ export default function MyBookingsPage() {
 
   if (loading) {
     return (
-      <div className="bg-[#FFFFFF] min-h-screen py-32 text-center text-[#666666]">
-        <div className="w-8 h-8 border-2 border-[#D5A936] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div className="bg-[#F8F9FA] min-h-screen py-32 text-center text-[#64748B]">
+        <div className="w-8 h-8 border-2 border-[#E5B642] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs font-medium">Loading your purchase history...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FFFFFF] min-h-screen pb-24 pt-8">
+    <div className="bg-[#F8F9FA] min-h-screen pb-24 pt-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="pb-4 border-b border-[#DADADA] mb-6 flex items-center justify-between">
+        <div className="pb-4 border-b border-[#E2E8F0] mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#202020]">Your Purchase History</h1>
-            <p className="text-xs text-[#666666] mt-0.5">
+            <h1 className="text-xl font-black text-[#1E232A]">Your Purchase History</h1>
+            <p className="text-xs text-[#64748B] mt-0.5">
               Manage your confirmed tickets and view M-Ticket passes.
             </p>
           </div>
           <Link
             to="/"
-            className="text-xs font-bold text-[#D5A936] hover:underline"
+            className="text-xs font-bold text-[#E5B642] hover:underline"
           >
             Explore Movies →
           </Link>
         </div>
 
         {actionMsg && (
-          <div className="mb-6 p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-emerald-800 text-xs flex items-center space-x-2">
+          <div className="mb-6 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs flex items-center space-x-2">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
             <span>{actionMsg}</span>
           </div>
@@ -129,15 +129,15 @@ export default function MyBookingsPage() {
 
         {/* Bookings List */}
         {bookings.length === 0 ? (
-          <div className="bg-white border border-[#DADADA] rounded-sm p-12 text-center">
-            <Ticket className="w-12 h-12 text-[#DADADA] mx-auto mb-3" />
-            <h3 className="text-base font-bold text-[#202020]">No Orders Found</h3>
-            <p className="text-xs text-[#666666] mt-1 mb-5">
+          <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center shadow-subtle">
+            <Ticket className="w-12 h-12 text-[#CBD5E1] mx-auto mb-3" />
+            <h3 className="text-base font-bold text-[#1E232A]">No Orders Found</h3>
+            <p className="text-xs text-[#64748B] mt-1 mb-5">
               You haven't booked any movie tickets yet.
             </p>
             <Link
               to="/"
-              className="px-5 py-2.5 bg-[#D5A936] hover:bg-[#C2982B] text-[#1A1A1A] text-xs font-bold rounded-sm transition shadow-sm"
+              className="px-6 py-2.5 bg-[#E5B642] hover:bg-[#D4A333] text-[#1E232A] text-xs font-bold rounded-full transition shadow-xs"
             >
               Browse Movies
             </Link>
@@ -159,30 +159,30 @@ export default function MyBookingsPage() {
               return (
                 <div
                   key={booking.id}
-                  className="bg-white border border-[#DADADA] rounded-sm p-5 hover:border-[#D5A936] transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className="bg-white border border-[#E2E8F0] rounded-xl p-5 hover:border-[#E5B642] transition shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 >
                   <div className="flex items-start space-x-4">
                     {booking.moviePosterUrl ? (
                       <img
                         src={booking.moviePosterUrl}
                         alt={booking.movieTitle}
-                        className="w-16 h-20 object-cover rounded-sm border border-[#DADADA] flex-shrink-0"
+                        className="w-16 h-20 object-cover rounded-lg border border-[#E2E8F0] flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-16 h-20 bg-[#F5F5F5] rounded-sm border border-[#DADADA] flex items-center justify-center text-[#888888] flex-shrink-0">
+                      <div className="w-16 h-20 bg-[#F8F9FA] rounded-lg border border-[#E2E8F0] flex items-center justify-center text-[#94A3B8] flex-shrink-0">
                         <Film className="w-6 h-6" />
                       </div>
                     )}
 
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
-                        <h3 className="font-bold text-sm sm:text-base text-[#202020]">
+                        <h3 className="font-bold text-sm sm:text-base text-[#1E232A]">
                           {booking.movieTitle}
                         </h3>
                         <span
-                          className={`text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                             isConfirmed
-                              ? 'bg-[#FBF6EA] text-[#D5A936] border border-[#E2C36E]'
+                              ? 'bg-[#FEF9EE] text-[#E5B642] border border-[#F2D38A]'
                               : 'bg-red-50 text-red-600 border border-red-200'
                           }`}
                         >
@@ -190,25 +190,25 @@ export default function MyBookingsPage() {
                         </span>
                       </div>
 
-                      <p className="text-xs text-[#666666]">
+                      <p className="text-xs text-[#64748B]">
                         {booking.theatreName} — {booking.screenName} ({booking.theatreCity})
                       </p>
 
-                      <p className="text-xs text-[#202020] font-semibold">
+                      <p className="text-xs text-[#1E232A] font-semibold">
                         {showDate}
                       </p>
 
-                      <p className="text-xs text-[#666666]">
-                        Seats: <span className="font-bold text-[#202020]">{booking.seats?.map((s) => `${s.row}${s.number}`).join(', ')}</span>
+                      <p className="text-xs text-[#64748B]">
+                        Seats: <span className="font-bold text-[#1E232A]">{booking.seats?.map((s) => `${s.row}${s.number}`).join(', ')}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:items-end space-y-2 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#F5F5F5]">
-                    <span className="text-base font-black text-[#202020]">
+                  <div className="flex flex-col sm:items-end space-y-2 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#F1F5F9]">
+                    <span className="text-base font-black text-[#1E232A]">
                       ₹{booking.totalAmount?.toFixed(2)}
                     </span>
-                    <span className="text-[10px] text-[#888888] font-mono">
+                    <span className="text-[10px] text-[#94A3B8] font-mono">
                       Ref: {booking.bookingRef}
                     </span>
 
@@ -216,7 +216,7 @@ export default function MyBookingsPage() {
                       <Link
                         to={`/confirmation/${booking.bookingRef}`}
                         state={{ booking }}
-                        className="px-3 py-1 bg-white border border-[#DADADA] hover:border-[#D5A936] text-[#202020] hover:text-[#D5A936] text-xs font-semibold rounded-sm transition"
+                        className="px-3 py-1 bg-white border border-[#E2E8F0] hover:border-[#E5B642] text-[#1E232A] hover:text-[#E5B642] text-xs font-semibold rounded-full transition"
                       >
                         View Ticket
                       </Link>
@@ -225,7 +225,7 @@ export default function MyBookingsPage() {
                         <button
                           onClick={() => handleCancelBooking(booking.id)}
                           disabled={cancellingId === booking.id}
-                          className="px-3 py-1 bg-white border border-red-200 hover:bg-red-50 text-red-600 text-xs font-semibold rounded-sm transition"
+                          className="px-3 py-1 bg-white border border-red-200 hover:bg-red-50 text-red-600 text-xs font-semibold rounded-full transition"
                         >
                           {cancellingId === booking.id ? 'Cancelling...' : 'Cancel'}
                         </button>
