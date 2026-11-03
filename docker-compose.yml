@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bookin_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bookin_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookin_password}
+      POSTGRES_DB: ${POSTGRES_DB:-bookin_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookin_user -d bookin_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: bookin_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.backend
+    container_name: bookin_backend
+    restart: always
+    environment:
+      - APP_NAME=BookIN
+      - APP_ENV=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql+psycopg://bookin_user:bookin_password@postgres:5432/bookin_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change_this_to_a_secure_random_64_character_hex_string_in_production}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_bookin_mock_key}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-rzp_test_bookin_mock_secret}
+      - RAZORPAY_WEBHOOK_SECRET=${RAZORPAY_WEBHOOK_SECRET:-rzp_webhook_secret_bookin}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.backend
+    container_name: bookin_celery_worker
+    restart: always
+    command: celery -A app.workers.tasks.celery_app worker --loglevel=info
+    environment:
+      - APP_NAME=BookIN
+      - DATABASE_URL=postgresql+psycopg://bookin_user:bookin_password@postgres:5432/bookin_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.backend
+    container_name: bookin_celery_beat
+    restart: always
+    command: celery -A app.workers.tasks.celery_app beat --loglevel=info
+    environment:
+      - APP_NAME=BookIN
+      - DATABASE_URL=postgresql+psycopg://bookin_user:bookin_password@postgres:5432/bookin_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.frontend
+    container_name: bookin_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
