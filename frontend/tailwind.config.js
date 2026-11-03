@@ -4,32 +4,47 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         brand: {
-          50: '#fff1f2',
-          100: '#ffe4e6',
-          200: '#fecdd3',
-          500: '#f43f5e',
-          600: '#e11d48', // Primary cinema ruby red
-          700: '#be123c',
-          800: '#9f1239',
-          900: '#881337',
+          50: '#fff1f3',
+          100: '#ffe4e8',
+          500: '#f84464',
+          600: '#e03756', // BookMyShow Primary Red/Pink
+          700: '#c52845',
         },
-        cinema: {
-          dark: '#0c0e14',
-          card: '#161922',
-          border: '#242938',
-          subtle: '#8e96a8',
-          gold: '#f59e0b',
-          prime: '#3b82f6',
-          recliner: '#8b5cf6'
+        bms: {
+          bg: '#F5F5F5',
+          card: '#FFFFFF',
+          text: '#222222',
+          subtext: '#666666',
+          muted: '#888888',
+          border: '#E5E5E5',
+          borderSubtle: '#EEEEEE',
+          red: '#F84464',
+          redHover: '#E03756',
+          green: '#1EA83C',
+          greenHover: '#188E32',
+          sold: '#CCCCCC',
+          darkNav: '#333545',
+          lightNav: '#1F2533',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      boxShadow: {
+        'bms': '0 1px 4px rgba(0,0,0,0.08)',
+        'bms-card': '0 2px 8px rgba(0,0,0,0.08)',
+        'bms-dropdown': '0 4px 16px rgba(0,0,0,0.12)',
+      },
+      borderRadius: {
+        'sm': '2px',
+        'DEFAULT': '4px',
+        'md': '6px',
+        'lg': '8px',
+        'xl': '10px',
       }
     },
   },

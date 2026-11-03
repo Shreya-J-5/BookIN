@@ -114,18 +114,22 @@ export default function AdminDashboardPage() {
 
   if (!isAdmin && !isTheatreAdmin) {
     return (
-      <div className="min-h-screen py-32 text-center text-white">
-        <Shield className="w-12 h-12 text-rose-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold">Administrative Access Restricted</h2>
-        <p className="text-xs text-slate-400 mt-2 mb-6">
-          You must be logged in as an Administrator or Theatre Manager to view this portal.
-        </p>
-        <button
-          onClick={() => openAuthModal('login')}
-          className="px-6 py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white font-bold rounded-xl text-xs"
-        >
-          Sign In with Admin Account
-        </button>
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-[#F5F5F5]">
+        <div className="bg-white border border-[#E5E5E5] rounded-md p-8 sm:p-10 text-center max-w-md w-full shadow-sm">
+          <div className="w-16 h-16 rounded-full bg-rose-50 text-[#F84464] mx-auto flex items-center justify-center mb-4 border border-rose-100">
+            <Shield className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-bold text-[#222222]">Administrative Access Restricted</h2>
+          <p className="text-sm text-[#666666] mt-2 mb-6">
+            You must be signed in with an Administrator or Theatre Manager account to view this management console.
+          </p>
+          <button
+            onClick={() => openAuthModal('login')}
+            className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm"
+          >
+            Sign In with Admin Account
+          </button>
+        </div>
       </div>
     );
   }
@@ -258,106 +262,118 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pt-8">
+    <div className="min-h-screen bg-[#F5F5F5] pb-24 pt-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#242938] mb-8 gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold">
+        {/* Top Control Bar */}
+        <div className="bg-white border border-[#E5E5E5] rounded-md p-6 mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-12 h-12 rounded-md bg-rose-50 text-[#F84464] border border-rose-100 flex items-center justify-center">
               <Shield className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white">BookIN Admin Control Hub</h1>
-              <p className="text-xs text-slate-400">
-                Operating as: <span className="text-amber-400 font-semibold">{user?.fullName}</span> ({user?.roles?.join(', ')})
+              <h1 className="text-xl font-bold text-[#222222]">BookIN Partner & Admin Hub</h1>
+              <p className="text-xs text-[#666666] mt-0.5">
+                Logged in as <span className="font-semibold text-[#222222]">{user?.fullName}</span> ({user?.roles?.join(', ')})
               </p>
             </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex bg-[#161922] border border-[#242938] p-1 rounded-xl text-xs font-semibold">
-            {['overview', 'movie', 'theatre', 'show'].map((tab) => (
+          <div className="flex bg-[#F5F5F5] border border-[#E5E5E5] p-1 rounded text-xs font-semibold">
+            {[
+              { id: 'overview', label: 'Overview' },
+              { id: 'movie', label: 'Add Movie' },
+              { id: 'theatre', label: 'Theatres & Screens' },
+              { id: 'show', label: 'Schedule Show' }
+            ].map((tab) => (
               <button
-                key={tab}
-                onClick={() => { setActiveTab(tab); setStatusMsg(''); setErrorMsg(''); }}
-                className={`px-3 py-1.5 rounded-lg capitalize transition ${
-                  activeTab === tab ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setStatusMsg(''); setErrorMsg(''); }}
+                className={`px-3.5 py-1.5 rounded transition ${
+                  activeTab === tab.id
+                    ? 'bg-white text-[#F84464] shadow-sm font-bold border border-[#E5E5E5]'
+                    : 'text-[#666666] hover:text-[#222222]'
                 }`}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Status Alerts */}
         {statusMsg && (
-          <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs flex items-center space-x-2">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <span>{statusMsg}</span>
+          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-xs flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+            <span className="font-medium">{statusMsg}</span>
           </div>
         )}
 
         {errorMsg && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{errorMsg}</span>
+          <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-md text-rose-800 text-xs flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+            <span className="font-medium">{errorMsg}</span>
           </div>
         )}
 
         {/* Tab 1: Overview Analytics */}
         {activeTab === 'overview' && stats && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Users</span>
-                <p className="text-2xl font-black text-white mt-1">{stats.totalUsers}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Registered Users</span>
+                <p className="text-2xl font-bold text-[#222222] mt-1.5">{stats.totalUsers}</p>
               </div>
 
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Movies</span>
-                <p className="text-2xl font-black text-rose-500 mt-1">{stats.totalMovies}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Active Movies</span>
+                <p className="text-2xl font-bold text-[#F84464] mt-1.5">{stats.totalMovies}</p>
               </div>
 
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Theatres</span>
-                <p className="text-2xl font-black text-sky-400 mt-1">{stats.totalTheatres}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Theatres</span>
+                <p className="text-2xl font-bold text-[#0078FF] mt-1.5">{stats.totalTheatres}</p>
               </div>
 
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Shows</span>
-                <p className="text-2xl font-black text-emerald-400 mt-1">{stats.totalShows}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Total Shows</span>
+                <p className="text-2xl font-bold text-[#1EA83C] mt-1.5">{stats.totalShows}</p>
               </div>
 
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Bookings</span>
-                <p className="text-2xl font-black text-amber-400 mt-1">{stats.totalBookings}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Bookings Made</span>
+                <p className="text-2xl font-bold text-[#FA8C16] mt-1.5">{stats.totalBookings}</p>
               </div>
 
-              <div className="bg-[#161922] border border-[#242938] p-4 rounded-2xl">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Revenue</span>
-                <p className="text-2xl font-black text-white mt-1">₹{stats.totalRevenue?.toFixed(0)}</p>
+              <div className="bg-white border border-[#E5E5E5] p-4 rounded-md shadow-sm">
+                <span className="text-[11px] text-[#666666] uppercase tracking-wider font-semibold">Gross Revenue</span>
+                <p className="text-2xl font-bold text-[#222222] mt-1.5">₹{stats.totalRevenue?.toFixed(0)}</p>
               </div>
             </div>
 
             {/* Theatre & Screen Status Overview */}
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6">
-              <h2 className="text-base font-bold text-white mb-4">Configured Theatres & Screens</h2>
-              <div className="space-y-4">
-                {theatresList.map((t) => (
-                  <div key={t.id} className="p-4 bg-[#0c0e14] border border-[#242938] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <h3 className="font-bold text-white text-sm">{t.name} ({t.city})</h3>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {t.screens?.map((sc) => (
-                          <span key={sc.id} className="px-2 py-0.5 rounded bg-[#161922] border border-[#242938] text-[10px] text-slate-300">
-                            {sc.name} • {sc.totalSeats} seats ({sc.screenType})
-                          </span>
-                        ))}
+            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 shadow-sm">
+              <h2 className="text-base font-bold text-[#222222] mb-4">Configured Theatres & Screens</h2>
+              <div className="space-y-3">
+                {theatresList.length === 0 ? (
+                  <p className="text-sm text-[#666666]">No theatres registered yet.</p>
+                ) : (
+                  theatresList.map((t) => (
+                    <div key={t.id} className="p-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h3 className="font-bold text-[#222222] text-sm">{t.name} <span className="text-xs font-normal text-[#666666]">({t.city})</span></h3>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {t.screens?.map((sc) => (
+                            <span key={sc.id} className="px-2.5 py-1 rounded bg-white border border-[#E5E5E5] text-xs text-[#444444] font-medium">
+                              {sc.name} • {sc.totalSeats} seats ({sc.screenType})
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -365,65 +381,65 @@ export default function AdminDashboardPage() {
 
         {/* Tab 2: Create Movie */}
         {activeTab === 'movie' && (
-          <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 sm:p-8 max-w-2xl">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
-              <Film className="w-5 h-5 text-rose-500" />
+          <div className="bg-white border border-[#E5E5E5] rounded-md p-6 sm:p-8 max-w-2xl shadow-sm">
+            <h2 className="text-lg font-bold text-[#222222] mb-5 flex items-center space-x-2">
+              <Film className="w-5 h-5 text-[#F84464]" />
               <span>Add New Movie Release</span>
             </h2>
 
             <form onSubmit={handleCreateMovie} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Movie Title</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Movie Title</label>
                 <input
                   type="text"
                   required
                   value={movieForm.title}
                   onChange={(e) => setMovieForm({ ...movieForm, title: e.target.value })}
                   placeholder="e.g. Gladiator II"
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Language</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Language</label>
                   <input
                     type="text"
                     required
                     value={movieForm.language}
                     onChange={(e) => setMovieForm({ ...movieForm, language: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Duration (Minutes)</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Duration (Minutes)</label>
                   <input
                     type="number"
                     required
                     value={movieForm.durationMinutes}
                     onChange={(e) => setMovieForm({ ...movieForm, durationMinutes: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Release Date</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Release Date</label>
                   <input
                     type="date"
                     required
                     value={movieForm.releaseDate}
                     onChange={(e) => setMovieForm({ ...movieForm, releaseDate: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Certification</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Certification</label>
                   <select
                     value={movieForm.certification}
                     onChange={(e) => setMovieForm({ ...movieForm, certification: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   >
                     <option value="U">U (Universal)</option>
                     <option value="UA">UA (Parental Guidance)</option>
@@ -433,30 +449,41 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Genres (comma separated)</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Genres (comma separated)</label>
                 <input
                   type="text"
                   value={movieForm.genreNames}
                   onChange={(e) => setMovieForm({ ...movieForm, genreNames: e.target.value })}
                   placeholder="Action, Sci-Fi, Drama"
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Description</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Description</label>
                 <textarea
                   rows="3"
                   value={movieForm.description}
                   onChange={(e) => setMovieForm({ ...movieForm, description: e.target.value })}
                   placeholder="Movie plot synopsis..."
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#444444] mb-1 font-semibold">Poster Image URL (Optional)</label>
+                <input
+                  type="url"
+                  value={movieForm.posterUrl}
+                  onChange={(e) => setMovieForm({ ...movieForm, posterUrl: e.target.value })}
+                  placeholder="https://..."
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white font-bold rounded-xl text-xs hover:from-rose-500 hover:to-rose-600 transition"
+                className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm mt-2"
               >
                 Create Movie
               </button>
@@ -466,51 +493,52 @@ export default function AdminDashboardPage() {
 
         {/* Tab 3: Create Theatre & Screen */}
         {activeTab === 'theatre' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 space-y-4">
-              <h2 className="text-base font-bold text-white flex items-center space-x-2">
-                <Building2 className="w-5 h-5 text-sky-400" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 space-y-4 shadow-sm">
+              <h2 className="text-base font-bold text-[#222222] flex items-center space-x-2">
+                <Building2 className="w-5 h-5 text-[#0078FF]" />
                 <span>Register New Theatre</span>
               </h2>
 
-              <form onSubmit={handleCreateTheatre} className="space-y-3 text-xs">
+              <form onSubmit={handleCreateTheatre} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Theatre Name</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Theatre Name</label>
                   <input
                     type="text"
                     required
                     value={theatreForm.name}
                     onChange={(e) => setTheatreForm({ ...theatreForm, name: e.target.value })}
                     placeholder="e.g. INOX: R-City Mall"
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">City</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">City</label>
                   <input
                     type="text"
                     required
                     value={theatreForm.city}
                     onChange={(e) => setTheatreForm({ ...theatreForm, city: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Address</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Address</label>
                   <textarea
                     rows="2"
                     required
                     value={theatreForm.address}
                     onChange={(e) => setTheatreForm({ ...theatreForm, address: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    placeholder="Full street address..."
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs transition"
+                  className="w-full py-2.5 bg-[#0078FF] hover:bg-[#0066d6] text-white font-semibold rounded text-sm transition shadow-sm"
                 >
                   Create Theatre
                 </button>
@@ -518,19 +546,19 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Add Screen to Theatre */}
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 space-y-4">
-              <h2 className="text-base font-bold text-white flex items-center space-x-2">
-                <PlusCircle className="w-5 h-5 text-emerald-400" />
+            <div className="bg-white border border-[#E5E5E5] rounded-md p-6 space-y-4 shadow-sm">
+              <h2 className="text-base font-bold text-[#222222] flex items-center space-x-2">
+                <PlusCircle className="w-5 h-5 text-[#1EA83C]" />
                 <span>Add Screen to Theatre</span>
               </h2>
 
-              <form onSubmit={handleCreateScreen} className="space-y-3 text-xs">
+              <form onSubmit={handleCreateScreen} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Select Theatre</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Select Theatre</label>
                   <select
                     value={screenForm.theatreId}
                     onChange={(e) => setScreenForm({ ...screenForm, theatreId: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   >
                     {theatresList.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -541,23 +569,23 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Screen Name</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Screen Name</label>
                   <input
                     type="text"
                     required
                     value={screenForm.name}
                     onChange={(e) => setScreenForm({ ...screenForm, name: e.target.value })}
                     placeholder="e.g. Screen 1 - IMAX"
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Screen Type</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Screen Type</label>
                   <select
                     value={screenForm.screenType}
                     onChange={(e) => setScreenForm({ ...screenForm, screenType: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   >
                     <option value="Dolby Atmos 2D">Dolby Atmos 2D</option>
                     <option value="IMAX 3D">IMAX 3D</option>
@@ -568,7 +596,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition"
+                  className="w-full py-2.5 bg-[#1EA83C] hover:bg-[#188c31] text-white font-semibold rounded text-sm transition shadow-sm"
                 >
                   Create Screen & Layout
                 </button>
@@ -579,19 +607,19 @@ export default function AdminDashboardPage() {
 
         {/* Tab 4: Schedule Show */}
         {activeTab === 'show' && (
-          <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 sm:p-8 max-w-2xl">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-amber-400" />
+          <div className="bg-white border border-[#E5E5E5] rounded-md p-6 sm:p-8 max-w-2xl shadow-sm">
+            <h2 className="text-lg font-bold text-[#222222] mb-5 flex items-center space-x-2">
+              <Calendar className="w-5 h-5 text-[#FA8C16]" />
               <span>Schedule New Movie Show</span>
             </h2>
 
             <form onSubmit={handleScheduleShow} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Select Movie</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Select Movie</label>
                 <select
                   value={showForm.movieId}
                   onChange={(e) => setShowForm({ ...showForm, movieId: e.target.value })}
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 >
                   {moviesList.map((m) => (
                     <option key={m.id} value={m.id}>{m.title}</option>
@@ -600,11 +628,11 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Select Screen</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Select Screen</label>
                 <select
                   value={showForm.screenId}
                   onChange={(e) => setShowForm({ ...showForm, screenId: e.target.value })}
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 >
                   {theatresList.flatMap((t) =>
                     (t.screens || []).map((sc) => (
@@ -617,49 +645,49 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Start Date & Time</label>
+                <label className="block text-[#444444] mb-1 font-semibold">Start Date & Time</label>
                 <input
                   type="datetime-local"
                   required
                   value={showForm.startTime}
                   onChange={(e) => setShowForm({ ...showForm, startTime: e.target.value })}
-                  className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Classic Price (₹)</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Classic (₹)</label>
                   <input
                     type="number"
                     value={showForm.classicPrice}
                     onChange={(e) => setShowForm({ ...showForm, classicPrice: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Prime Price (₹)</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Prime (₹)</label>
                   <input
                     type="number"
                     value={showForm.primePrice}
                     onChange={(e) => setShowForm({ ...showForm, primePrice: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">Recliner Price (₹)</label>
+                  <label className="block text-[#444444] mb-1 font-semibold">Recliner (₹)</label>
                   <input
                     type="number"
                     value={showForm.reclinerPrice}
                     onChange={(e) => setShowForm({ ...showForm, reclinerPrice: e.target.value })}
-                    className="w-full p-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5E5] rounded text-sm text-[#222222] focus:outline-none focus:border-[#F84464] transition"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-black rounded-xl text-xs hover:from-amber-400 hover:to-amber-500 transition"
+                className="w-full py-3 bg-[#F84464] hover:bg-[#d63854] text-white font-semibold rounded text-sm transition shadow-sm mt-2"
               >
                 Schedule Show & Initialize Seats
               </button>

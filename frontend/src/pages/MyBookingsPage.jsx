@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { graphqlRequest } from '../services/graphqlClient';
 import { useAuth } from '../context/AuthContext';
-import { Ticket, Calendar, Clock, MapPin, AlertCircle, XCircle, ChevronRight, Film } from 'lucide-react';
+import { Ticket, Film, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function MyBookingsPage() {
   const { user, isAuthenticated, openAuthModal } = useAuth();
@@ -62,7 +62,7 @@ export default function MyBookingsPage() {
   }, [isAuthenticated]);
 
   const handleCancelBooking = async (bookingId) => {
-    if (!confirm('Are you sure you want to cancel this booking? A ₹50 cancellation fee applies.')) {
+    if (!confirm('Are you sure you want to cancel this booking? A Rs. 50 cancellation fee applies.')) {
       return;
     }
 
@@ -79,9 +79,8 @@ export default function MyBookingsPage() {
         }
       `;
       const data = await graphqlRequest(mutation, { bookingId });
-      setActionMsg(`Booking cancelled. Refund of ₹${data.cancelBooking.refundAmount.toFixed(2)} initiated.`);
+      setActionMsg(`Booking cancelled. Refund of Rs. ${data.cancelBooking.refundAmount.toFixed(2)} initiated.`);
       
-      // Update local state
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? { ...b, status: 'CANCELLED' } : b))
       );
@@ -94,138 +93,138 @@ export default function MyBookingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-slate-400">
-        <div className="animate-spin w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-sm font-medium">Loading your booking history...</p>
+      <div className="bg-[#F5F5F5] min-h-screen py-32 text-center text-[#888888]">
+        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs font-medium">Loading your purchase history...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-24 pt-8">
+    <div className="bg-[#F5F5F5] min-h-screen pb-24 pt-6">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 border-b border-[#242938] mb-8">
+        <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E5] mb-6">
           <div>
-            <h1 className="text-2xl font-black text-white flex items-center space-x-2">
-              <Ticket className="w-6 h-6 text-rose-500" />
-              <span>My Movie Bookings</span>
+            <h1 className="text-xl font-bold text-[#222222] flex items-center space-x-2">
+              <Ticket className="w-5 h-5 text-[#F84464]" />
+              <span>Your Orders & Tickets</span>
             </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              View your digital tickets and manage reservations
+            <p className="text-xs text-[#666666] mt-0.5">
+              Manage your confirmed movie tickets & cancellations
             </p>
           </div>
           <Link
             to="/"
-            className="px-4 py-2 bg-[#161922] hover:bg-slate-800 border border-[#242938] text-white rounded-xl text-xs font-semibold transition"
+            className="px-3.5 py-1.5 bg-white border border-[#E5E5E5] text-[#222222] hover:bg-[#F9F9F9] rounded text-xs font-semibold transition"
           >
             Explore Movies
           </Link>
         </div>
 
         {actionMsg && (
-          <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs">
+          <div className="mb-5 p-3 bg-[#EAFBF0] border border-[#BDEECF] rounded text-[#116928] text-xs">
             {actionMsg}
           </div>
         )}
 
         {/* Bookings List */}
         {bookings.length === 0 ? (
-          <div className="bg-[#161922] border border-[#242938] rounded-2xl p-12 text-center text-slate-400">
-            <Film className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-white">No Tickets Booked Yet</h3>
-            <p className="text-xs text-slate-400 mt-1 mb-6">
-              You haven't made any bookings yet. Grab your seat for the latest movies!
+          <div className="bg-white border border-[#E5E5E5] rounded-lg p-10 text-center text-[#888888] shadow-bms">
+            <Film className="w-10 h-10 text-[#CCCCCC] mx-auto mb-2" />
+            <h3 className="font-bold text-[#222222] text-sm">No Bookings Yet</h3>
+            <p className="text-xs text-[#777777] mt-1 mb-5">
+              You haven't purchased any tickets yet. Catch the latest blockbuster now!
             </p>
             <Link
               to="/"
-              className="px-6 py-3 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-rose-900/30"
+              className="px-5 py-2 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition"
             >
-              Browse Movies Now
+              Browse Movies
             </Link>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {bookings.map((b) => (
               <div
                 key={b.id}
-                className="bg-[#161922] border border-[#242938] rounded-2xl p-6 transition hover:border-slate-700 space-y-4"
+                className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3"
               >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-[#242938]">
-                  <div className="flex items-start space-x-4">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-3 border-b border-[#F0F0F0]">
+                  <div className="flex items-start space-x-3.5">
                     {b.moviePosterUrl && (
                       <img
                         src={b.moviePosterUrl}
                         alt={b.movieTitle}
-                        className="w-14 h-20 object-cover rounded-xl border border-[#242938] flex-shrink-0"
+                        className="w-12 h-18 object-cover rounded border border-[#E5E5E5] flex-shrink-0"
                       />
                     )}
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        Booking Ref: <span className="text-white font-mono">{b.bookingRef}</span>
+                      <span className="text-[10px] font-bold text-[#888888] uppercase tracking-wider">
+                        Booking ID: <span className="font-mono text-[#222222]">{b.bookingRef}</span>
                       </span>
-                      <h2 className="text-lg font-bold text-white mt-0.5">{b.movieTitle}</h2>
-                      <p className="text-xs text-slate-400">
-                        {b.theatreName} • {b.screenName} ({b.theatreCity})
+                      <h2 className="text-base font-bold text-[#222222] mt-0.5">{b.movieTitle}</h2>
+                      <p className="text-xs text-[#666666]">
+                        {b.theatreName} ({b.theatreCity}) • {b.screenName}
                       </p>
                     </div>
                   </div>
 
                   <div className="text-left sm:text-right">
                     <span
-                      className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                         b.status === 'CONFIRMED'
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                          ? 'bg-[#EAFBF0] text-[#116928] border border-[#BDEECF]'
+                          : 'bg-[#FFF1F3] text-[#F84464] border border-[#F84464]/30'
                       }`}
                     >
                       {b.status}
                     </span>
-                    <p className="text-base font-black text-rose-500 mt-1">₹{b.totalAmount.toFixed(2)}</p>
+                    <p className="text-sm font-bold text-[#222222] mt-1">Rs. {b.totalAmount.toFixed(2)}</p>
                   </div>
                 </div>
 
-                {/* Show details & Seats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+                {/* Show Details */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-[#555555]">
                   <div>
-                    <span className="text-slate-500 block">Showtime</span>
-                    <span className="font-semibold text-white">
+                    <span className="text-[#888888] block text-[11px]">Showtime</span>
+                    <span className="font-semibold text-[#222222]">
                       {new Date(b.startTime).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 block">Seats</span>
-                    <span className="font-bold text-rose-400">
+                    <span className="text-[#888888] block text-[11px]">Seats</span>
+                    <span className="font-bold text-[#F84464]">
                       {b.seats?.map((s) => `${s.row}${s.number}`).join(', ')}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 block">Booked On</span>
-                    <span className="font-medium text-slate-300">
+                    <span className="text-[#888888] block text-[11px]">Booked On</span>
+                    <span className="text-[#555555]">
                       {new Date(b.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                 </div>
 
-                {/* Action footer */}
-                <div className="pt-4 border-t border-[#242938]/60 flex items-center justify-between">
+                {/* Footer Controls */}
+                <div className="pt-3 border-t border-[#F0F0F0] flex items-center justify-between text-xs">
                   <Link
                     to={`/confirmation/${b.bookingRef}`}
                     state={{ booking: b }}
-                    className="text-xs font-semibold text-rose-500 hover:underline flex items-center space-x-1"
+                    className="font-bold text-[#F84464] hover:underline flex items-center"
                   >
-                    <span>View QR Ticket</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>View QR E-Ticket</span>
+                    <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
                   </Link>
 
                   {b.status === 'CONFIRMED' && (
                     <button
                       onClick={() => handleCancelBooking(b.id)}
                       disabled={cancellingId === b.id}
-                      className="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-medium transition disabled:opacity-50"
+                      className="px-3 py-1 bg-white hover:bg-[#FFF1F3] text-[#F84464] border border-[#F84464]/30 rounded text-xs font-semibold transition disabled:opacity-50"
                     >
                       {cancellingId === b.id ? 'Cancelling...' : 'Cancel Ticket'}
                     </button>

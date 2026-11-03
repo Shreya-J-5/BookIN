@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, Ticket, Film, Calendar, MapPin, Printer, Home } from 'lucide-react';
+import { CheckCircle2, Ticket, Printer, Home, MapPin, Calendar, Clock } from 'lucide-react';
 
 export default function BookingConfirmationPage() {
   const { bookingRef } = useParams();
@@ -10,11 +10,10 @@ export default function BookingConfirmationPage() {
   const booking = location.state?.booking;
 
   useEffect(() => {
-    // Launch celebratory confetti
     try {
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 80,
+        spread: 60,
         origin: { y: 0.6 }
       });
     } catch (e) {
@@ -27,40 +26,36 @@ export default function BookingConfirmationPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pt-8">
+    <div className="bg-[#F5F5F5] min-h-screen pb-24 pt-8">
       <div className="max-w-xl mx-auto px-4 sm:px-6">
         
-        {/* Success Header */}
-        <div className="text-center space-y-2 mb-8">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-950/40">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Booking Confirmed!
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Your digital movie ticket has been issued. Enjoy the show!
+        {/* Success Alert Banner */}
+        <div className="bg-[#EAFBF0] border border-[#BDEECF] rounded-lg p-4 mb-6 text-center space-y-1">
+          <CheckCircle2 className="w-8 h-8 text-[#1EA83C] mx-auto" />
+          <h1 className="text-base font-bold text-[#116928]">Booking Confirmed!</h1>
+          <p className="text-xs text-[#2A7B40]">
+            Your digital movie ticket has been confirmed and sent to your email.
           </p>
         </div>
 
-        {/* Digital Ticket Card */}
-        <div className="relative bg-[#161922] border border-[#242938] rounded-3xl overflow-hidden shadow-2xl text-white print:border-black print:text-black">
+        {/* M-Ticket Card (BookMyShow Clean Boxy Ticket) */}
+        <div className="bg-white border border-[#E5E5E5] rounded-lg shadow-bms overflow-hidden print:border-black">
           
-          {/* Card Top: Movie Details */}
-          <div className="p-6 sm:p-8 border-b border-dashed border-[#2e3447]">
+          {/* Ticket Header */}
+          <div className="p-6 border-b border-[#F0F0F0]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span className="px-2.5 py-0.5 rounded-full bg-rose-600/20 border border-rose-600/40 text-rose-400 text-[10px] font-bold uppercase tracking-wider">
+                <span className="text-[10px] font-bold text-[#F84464] uppercase tracking-wider bg-[#FFF1F3] px-2 py-0.5 rounded">
                   Confirmed E-Ticket
                 </span>
-                <h2 className="text-2xl font-black text-white mt-2">
-                  {booking?.movieTitle || 'Blockbuster Movie'}
+                <h2 className="text-xl font-bold text-[#222222] mt-1.5">
+                  {booking?.movieTitle || 'Blockbuster Screening'}
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  {booking?.theatreName} • {booking?.screenName}
+                <p className="text-xs text-[#666666] mt-0.5">
+                  {booking?.theatreName} ({booking?.theatreCity})
                 </p>
-                <p className="text-xs text-slate-400">
-                  {booking?.theatreCity}
+                <p className="text-xs text-[#888888]">
+                  {booking?.screenName}
                 </p>
               </div>
 
@@ -68,54 +63,47 @@ export default function BookingConfirmationPage() {
                 <img
                   src={booking.moviePosterUrl}
                   alt="Poster"
-                  className="w-16 h-24 object-cover rounded-xl border border-[#242938] shadow-md flex-shrink-0"
+                  className="w-16 h-24 object-cover rounded border border-[#E5E5E5] shadow-xs flex-shrink-0"
                 />
               )}
             </div>
 
-            {/* Showtime & Seats Info */}
-            <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#242938]/60 text-xs">
+            {/* Time & Seats Grid */}
+            <div className="grid grid-cols-2 gap-4 mt-5 pt-4 border-t border-[#F0F0F0] text-xs">
               <div>
-                <span className="text-slate-400 font-medium block">Date & Time</span>
-                <span className="font-bold text-white text-sm">
+                <span className="text-[#888888] font-medium block">Showtime</span>
+                <span className="font-bold text-[#222222]">
                   {booking?.startTime ? new Date(booking.startTime).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : 'Today'}
                 </span>
               </div>
 
               <div>
-                <span className="text-slate-400 font-medium block">Seats</span>
-                <span className="font-bold text-rose-400 text-sm">
-                  {booking?.seats?.map((s) => `${s.row}${s.number}`).join(', ') || 'Selected Seats'}
+                <span className="text-[#888888] font-medium block">Seats</span>
+                <span className="font-bold text-[#F84464] text-sm">
+                  {booking?.seats?.map((s) => `${s.row}${s.number}`).join(', ') || 'Seats'}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Perforation Cutouts */}
-          <div className="relative flex items-center justify-between px-2 -my-3">
-            <div className="w-6 h-6 rounded-full bg-[#0c0e14] border border-[#242938]" />
-            <div className="flex-1 border-t-2 border-dashed border-[#242938] mx-2" />
-            <div className="w-6 h-6 rounded-full bg-[#0c0e14] border border-[#242938]" />
-          </div>
-
-          {/* Card Bottom: QR Code & Booking Ref */}
-          <div className="p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 bg-[#11131b]">
-            <div className="space-y-2 text-center sm:text-left">
+          {/* Ticket Footer with QR Code & Booking Ref */}
+          <div className="p-6 bg-[#FAFAFA] border-t border-dashed border-[#E5E5E5] flex items-center justify-between gap-4">
+            <div className="space-y-1.5">
               <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Booking Reference</span>
-                <p className="text-xl font-black tracking-widest text-white font-mono">{bookingRef}</p>
+                <span className="text-[10px] text-[#888888] font-bold uppercase tracking-wider">Booking ID</span>
+                <p className="text-lg font-black text-[#222222] font-mono tracking-wider">{bookingRef}</p>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Total Paid</span>
-                <p className="text-lg font-black text-rose-500">₹{booking?.totalAmount?.toFixed(2) || '0.00'}</p>
+                <span className="text-[10px] text-[#888888] font-bold uppercase tracking-wider">Total Paid</span>
+                <p className="text-base font-bold text-[#222222]">Rs. {booking?.totalAmount?.toFixed(2) || '0.00'}</p>
               </div>
             </div>
 
-            {/* QR Code */}
-            <div className="p-3 bg-white rounded-2xl shadow-xl flex-shrink-0">
+            {/* QR Code Container */}
+            <div className="p-2.5 bg-white border border-[#E5E5E5] rounded shadow-xs flex-shrink-0">
               <QRCodeSVG
                 value={booking?.qrPayload || `BOOKIN|${bookingRef}`}
-                size={110}
+                size={95}
                 level="H"
                 includeMargin={false}
               />
@@ -123,30 +111,30 @@ export default function BookingConfirmationPage() {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 print:hidden">
+        {/* Action Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6 print:hidden">
           <button
             onClick={handlePrint}
-            className="w-full sm:w-auto px-6 py-3 bg-[#161922] hover:bg-slate-800 border border-[#242938] text-white font-semibold rounded-xl text-xs transition flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-[#F9F9F9] border border-[#E5E5E5] text-[#222222] font-semibold rounded text-xs transition flex items-center justify-center space-x-1.5 shadow-xs"
           >
-            <Printer className="w-4 h-4 text-slate-400" />
-            <span>Print E-Ticket</span>
+            <Printer className="w-4 h-4 text-[#666666]" />
+            <span>Print Ticket</span>
           </button>
 
           <Link
             to="/my-bookings"
-            className="w-full sm:w-auto px-6 py-3 bg-[#161922] hover:bg-slate-800 border border-[#242938] text-white font-semibold rounded-xl text-xs transition flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-[#F9F9F9] border border-[#E5E5E5] text-[#222222] font-semibold rounded text-xs transition flex items-center justify-center space-x-1.5 shadow-xs"
           >
-            <Ticket className="w-4 h-4 text-rose-500" />
-            <span>My Bookings</span>
+            <Ticket className="w-4 h-4 text-[#F84464]" />
+            <span>Your Orders</span>
           </Link>
 
           <Link
             to="/"
-            className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl text-xs transition flex items-center justify-center space-x-2 shadow-lg shadow-rose-900/30"
+            className="w-full sm:w-auto px-6 py-2.5 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition flex items-center justify-center space-x-1.5 shadow-sm"
           >
             <Home className="w-4 h-4" />
-            <span>Back to Movies</span>
+            <span>Book Another Movie</span>
           </Link>
         </div>
 

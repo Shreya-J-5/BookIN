@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, Film, Shield, User, Lock, Mail, Phone, MapPin } from 'lucide-react';
+import { X, Lock, Mail, User, Phone, ShieldCheck } from 'lucide-react';
 
 export default function AuthModal() {
-  const { isAuthModalOpen, closeAuthModal, authModalMode, login, register } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, authModalMode, login, register, selectedCity } = useAuth();
   const [mode, setMode] = useState(authModalMode || 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('Mumbai');
-  const [role, setRole] = useState('CUSTOMER');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +23,7 @@ export default function AuthModal() {
       if (mode === 'login') {
         await login(email, password);
       } else {
-        await register({ email, password, fullName, phone, city, role });
+        await register({ email, password, fullName, phone, city: selectedCity, role: 'CUSTOMER' });
       }
     } catch (err) {
       setError(err.message || 'Authentication failed. Please check your credentials.');
@@ -34,7 +32,7 @@ export default function AuthModal() {
     }
   };
 
-  const fillDemoCredentials = (type) => {
+  const fillDemo = (type) => {
     setMode('login');
     setError('');
     if (type === 'admin') {
@@ -50,35 +48,38 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-[#161922] border border-[#242938] rounded-2xl shadow-2xl p-6 sm:p-8 text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 transition-opacity animate-fade-in">
+      <div className="relative w-full max-w-sm bg-white border border-[#E5E5E5] rounded-lg shadow-2xl p-6 text-[#222222]">
+        
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition"
+          className="absolute top-4 right-4 p-1.5 text-[#888888] hover:text-[#222222] rounded hover:bg-[#F5F5F5] transition"
         >
-          <X size={20} />
+          <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-rose-400 flex items-center justify-center shadow-lg shadow-rose-900/40">
-            <Film className="w-5 h-5 text-white" />
+        {/* Brand Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center space-x-1 mb-1">
+            <span className="text-2xl font-black tracking-tight text-[#222222]">
+              book<span className="text-[#F84464]">in</span>
+            </span>
+            <div className="w-2 h-2 rounded-full bg-[#F84464]" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Book<span className="text-rose-500">IN</span></h2>
-            <p className="text-xs text-slate-400">Your portal to cinematic blockbusters</p>
-          </div>
+          <p className="text-xs text-[#666666]">
+            {mode === 'login' ? 'Sign in to access your bookings & tickets' : 'Create an account to book movie tickets'}
+          </p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-[#242938] mb-6">
+        {/* Tab switch */}
+        <div className="flex border-b border-[#E5E5E5] mb-5">
           <button
             type="button"
-            className={`flex-1 py-2 text-sm font-semibold border-b-2 transition ${
+            className={`flex-1 pb-2 text-xs font-bold border-b-2 transition ${
               mode === 'login'
-                ? 'border-rose-500 text-rose-500'
-                : 'border-transparent text-slate-400 hover:text-white'
+                ? 'border-[#F84464] text-[#F84464]'
+                : 'border-transparent text-[#666666] hover:text-[#222222]'
             }`}
             onClick={() => { setMode('login'); setError(''); }}
           >
@@ -86,51 +87,51 @@ export default function AuthModal() {
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 text-sm font-semibold border-b-2 transition ${
+            className={`flex-1 pb-2 text-xs font-bold border-b-2 transition ${
               mode === 'register'
-                ? 'border-rose-500 text-rose-500'
-                : 'border-transparent text-slate-400 hover:text-white'
+                ? 'border-[#F84464] text-[#F84464]'
+                : 'border-transparent text-[#666666] hover:text-[#222222]'
             }`}
             onClick={() => { setMode('register'); setError(''); }}
           >
-            Create Account
+            Register
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs leading-relaxed">
+          <div className="mb-4 p-2.5 bg-[#FFF1F3] border border-[#F84464]/30 rounded text-[#F84464] text-xs">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {mode === 'register' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Full Name</label>
+                <label className="block text-[#444444] font-medium mb-1">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                  <User className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Aryan Khan"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-sm focus:outline-none focus:border-rose-500 text-white placeholder-slate-500"
+                    placeholder="e.g. Rahul Sharma"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
+                <label className="block text-[#444444] font-medium mb-1">Phone Number</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                  <Phone className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="9876543210"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-sm focus:outline-none focus:border-rose-500 text-white placeholder-slate-500"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
                   />
                 </div>
               </div>
@@ -138,31 +139,31 @@ export default function AuthModal() {
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Email Address</label>
+            <label className="block text-[#444444] font-medium mb-1">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+              <Mail className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-sm focus:outline-none focus:border-rose-500 text-white placeholder-slate-500"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
+            <label className="block text-[#444444] font-medium mb-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+              <Lock className="absolute left-3 top-2.5 w-4 h-4 text-[#888888]" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e14] border border-[#242938] rounded-xl text-sm focus:outline-none focus:border-rose-500 text-white placeholder-slate-500"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] focus:outline-none focus:border-[#F84464]"
               />
             </div>
           </div>
@@ -170,41 +171,42 @@ export default function AuthModal() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-rose-900/30 disabled:opacity-50"
+            className="w-full py-2.5 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition shadow-sm disabled:opacity-50 mt-2"
           >
-            {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Create Account'}
+            {loading ? 'Processing...' : mode === 'login' ? 'Continue' : 'Create Account'}
           </button>
         </form>
 
-        {/* Quick Demo Credentials helper */}
-        <div className="mt-6 pt-5 border-t border-[#242938]">
-          <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-2.5">
-            Quick Fill Demo Accounts:
+        {/* Quick Demo Credentials */}
+        <div className="mt-5 pt-4 border-t border-[#E5E5E5]">
+          <p className="text-[10px] text-[#888888] font-semibold uppercase tracking-wider mb-2">
+            One-Click Demo Fill:
           </p>
           <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
-              onClick={() => fillDemoCredentials('customer')}
-              className="py-1.5 px-2 bg-[#0c0e14] border border-[#242938] rounded-lg text-xs font-medium text-slate-300 hover:border-rose-500 hover:text-white transition"
+              onClick={() => fillDemo('customer')}
+              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-[#444444] transition"
             >
-              👤 Customer
+              Customer
             </button>
             <button
               type="button"
-              onClick={() => fillDemoCredentials('admin')}
-              className="py-1.5 px-2 bg-[#0c0e14] border border-[#242938] rounded-lg text-xs font-medium text-amber-400 hover:border-amber-500 transition"
+              onClick={() => fillDemo('admin')}
+              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-amber-700 transition"
             >
-              👑 Admin
+              Admin
             </button>
             <button
               type="button"
-              onClick={() => fillDemoCredentials('theatre')}
-              className="py-1.5 px-2 bg-[#0c0e14] border border-[#242938] rounded-lg text-xs font-medium text-sky-400 hover:border-sky-500 transition"
+              onClick={() => fillDemo('theatre')}
+              className="py-1 px-1.5 bg-[#F5F5F5] hover:bg-[#EEEEEE] border border-[#E5E5E5] rounded text-[11px] font-medium text-sky-700 transition"
             >
-              🏢 Theatre
+              Theatre
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );

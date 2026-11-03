@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { graphqlRequest } from '../services/graphqlClient';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Clock, ShieldCheck, Armchair, ChevronRight, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Clock, AlertCircle, ChevronRight, X } from 'lucide-react';
 
 export default function SeatSelectionPage() {
   const { showId } = useParams();
@@ -30,6 +30,7 @@ export default function SeatSelectionPage() {
             show(id: $showId) {
               id
               startTime
+              basePrices
               movie {
                 title
                 certification
@@ -100,7 +101,6 @@ export default function SeatSelectionPage() {
             })
           );
 
-          // If the seat was in our local selection and got locked/booked by someone else, unselect it
           if (data.status === 'LOCKED' || data.status === 'BOOKED') {
             setSelectedSeatIds((prev) => prev.filter((id) => id !== data.seatId));
           }
@@ -135,10 +135,9 @@ export default function SeatSelectionPage() {
     rowsMap[ss.row].seats.push(ss);
   });
 
-  // Sort rows alphabetically
   const sortedRows = Object.values(rowsMap).sort((a, b) => a.row.localeCompare(b.row));
 
-  // Handle seat click
+  // Toggle seat
   const toggleSeatSelection = (seat) => {
     if (seat.status !== 'AVAILABLE') return;
 
@@ -153,7 +152,6 @@ export default function SeatSelectionPage() {
     }
   };
 
-  // Calculate pricing breakdown
   const selectedSeats = showSeats.filter((ss) => selectedSeatIds.includes(ss.seatId));
   const subtotal = selectedSeats.reduce((acc, curr) => acc + curr.price, 0);
 
@@ -189,7 +187,7 @@ export default function SeatSelectionPage() {
 
       const reservation = data.reserveSeats;
 
-      // Broadcast seat locked via WebSocket
+      // Broadcast via WebSocket
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
         selectedSeatIds.forEach((sid) => {
           socketRef.current.send(
@@ -203,7 +201,6 @@ export default function SeatSelectionPage() {
         });
       }
 
-      // Navigate to checkout with reservation ID
       navigate(`/checkout/${reservation.reservationId}`, {
         state: {
           reservation,
@@ -211,8 +208,8 @@ export default function SeatSelectionPage() {
         }
       });
     } catch (err) {
-      setErrorMsg(err.message || 'Seat reservation failed. Please choose other seats.');
-      // Refresh seat inventory
+      setErrorMsg(err.message || 'Seat reservation failed. Please select different seats.');
+      // Refresh seats
       const refreshQuery = `query { showSeats(showId: "${showId}") { id seatId row number tier price status isAccessible } }`;
       graphqlRequest(refreshQuery).then((res) => setShowSeats(res.showSeats || []));
     } finally {
@@ -222,177 +219,196 @@ export default function SeatSelectionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-slate-400">
-        <div className="animate-spin w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-sm font-medium">Loading interactive seat layout...</p>
+      <div className="min-h-screen py-32 text-center text-[#888888] bg-[#F5F5F5]">
+        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs font-medium">Loading seat map...</p>
       </div>
     );
   }
 
   if (!show) {
     return (
-      <div className="min-h-screen py-32 text-center text-white">
-        <h2 className="text-2xl font-bold">Show Not Found</h2>
-        <Link to="/" className="text-rose-500 underline text-sm mt-2 inline-block">
+      <div className="min-h-screen py-32 text-center text-[#222222] bg-[#F5F5F5]">
+        <h2 className="text-xl font-bold">Show Not Found</h2>
+        <Link to="/" className="text-[#F84464] text-xs font-semibold underline mt-2 inline-block">
           Return to Movies
         </Link>
       </div>
     );
   }
 
+  const startTimeStr = new Date(show.startTime).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+
   return (
-    <div className="min-h-screen pb-32">
-      {/* Top Header Bar */}
-      <div className="bg-[#161922] border-b border-[#242938] py-4 sticky top-16 sm:top-20 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center space-x-4">
+    <div className="bg-[#F5F5F5] min-h-screen pb-32">
+      
+      {/* 1. Clean Top Header Bar */}
+      <div className="bg-white border-b border-[#E5E5E5] py-3 sticky top-16 z-30 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 rounded-xl bg-[#0c0e14] border border-[#242938] text-slate-300 hover:text-white transition"
+              className="p-1.5 rounded hover:bg-[#F5F5F5] text-[#555555] transition"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
-                <span>{show.movie.title}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-rose-600 font-bold">
-                  {show.movie.certification}
-                </span>
+              <h1 className="text-sm sm:text-base font-bold text-[#222222]">
+                {show.movie.title}
               </h1>
-              <p className="text-xs text-slate-400">
-                {show.screen.theatre.name} • {show.screen.name} ({show.screen.screenType})
+              <p className="text-xs text-[#666666]">
+                {show.screen.theatre.name} | {startTimeStr} | {show.screen.screenType}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#0c0e14] border border-[#242938] text-xs">
-              <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-              <span className="text-slate-300 font-medium">{wsConnected ? 'Live Sync Active' : 'Connecting Sync...'}</span>
-            </div>
+          <div className="flex items-center space-x-2">
+            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#1EA83C]' : 'bg-amber-500'}`} />
+            <span className="text-[11px] text-[#777777] hidden sm:inline">
+              {wsConnected ? 'Live Updates Active' : 'Connecting Sync...'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Main Seat Layout Canvas */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      {/* 2. Main Seat Layout Area */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         
         {/* Error notification */}
         {errorMsg && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center space-x-2 animate-shake">
+          <div className="mb-4 p-3 bg-[#FFF1F3] border border-[#F84464]/30 rounded text-[#F84464] text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center justify-center gap-6 py-4 bg-[#161922]/60 border border-[#242938] rounded-2xl mb-10 text-xs">
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-[#0c0e14] border border-[#374151]" />
-            <span className="text-slate-300">Available</span>
+        {/* Seat Layout Box */}
+        <div className="bg-white border border-[#E5E5E5] rounded-lg p-6 sm:p-10 shadow-bms">
+          
+          {/* Seat Tiers & Rows */}
+          <div className="space-y-8">
+            {sortedRows.map(({ row, tier, price, seats }) => {
+              const isPremium = tier === 'RECLINER';
+
+              return (
+                <div key={row} className="space-y-2">
+                  {/* Category Header */}
+                  <div className="text-[11px] font-bold text-[#888888] uppercase tracking-wider pb-1 border-b border-[#F0F0F0]">
+                    {tier} — Rs. {price.toFixed(2)}
+                  </div>
+
+                  {/* Seats in this row */}
+                  <div className="flex items-center justify-center space-x-2 sm:space-x-3 py-1">
+                    <span className="w-5 text-center text-xs font-bold text-[#888888]">{row}</span>
+
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap justify-center">
+                      {seats
+                        .sort((a, b) => a.number - b.number)
+                        .map((seat) => {
+                          const isSelected = selectedSeatIds.includes(seat.seatId);
+                          const isAvailable = seat.status === 'AVAILABLE';
+                          const isLocked = seat.status === 'LOCKED';
+                          const isBooked = seat.status === 'BOOKED';
+
+                          let seatClasses = '';
+                          if (isSelected) {
+                            // Selected: Green
+                            seatClasses = 'bg-[#1EA83C] border-[#1EA83C] text-white font-bold';
+                          } else if (isBooked) {
+                            // Booked: Grey
+                            seatClasses = 'bg-[#EEEEEE] border-[#DDDDDD] text-[#AAAAAA] cursor-not-allowed';
+                          } else if (isLocked) {
+                            // Locked: Amber
+                            seatClasses = 'bg-amber-100 border-amber-300 text-amber-700 cursor-not-allowed';
+                          } else if (isPremium) {
+                            // Premium: Light purple border
+                            seatClasses = 'bg-white border-[#8B5CF6] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white';
+                          } else {
+                            // Available: White with Green border
+                            seatClasses = 'bg-white border-[#1EA83C] text-[#1EA83C] hover:bg-[#1EA83C] hover:text-white';
+                          }
+
+                          return (
+                            <button
+                              key={seat.id}
+                              disabled={!isAvailable}
+                              onClick={() => toggleSeatSelection(seat)}
+                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-sm border text-[11px] flex items-center justify-center font-medium transition ${seatClasses}`}
+                              title={`Seat ${row}${seat.number} (${tier} - Rs. ${price})`}
+                            >
+                              {seat.number}
+                            </button>
+                          );
+                        })}
+                    </div>
+
+                    <span className="w-5 text-center text-xs font-bold text-[#888888]">{row}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-emerald-500 shadow-md shadow-emerald-900/50" />
-            <span className="text-white font-semibold">Selected</span>
+
+          {/* Screen Indicator (BookMyShow "All eyes this way please") */}
+          <div className="mt-16 text-center max-w-md mx-auto">
+            <div className="w-full h-1 bg-[#DDDDDD] rounded-full mx-auto" />
+            <p className="text-[11px] font-bold text-[#888888] uppercase tracking-wider mt-2">
+              All eyes this way please! (Screen)
+            </p>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-amber-500/80 border border-amber-600" />
-            <span className="text-slate-400">Locked (Pending)</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-rose-900/80 border border-rose-800" />
-            <span className="text-slate-500">Booked</span>
-          </div>
-        </div>
 
-        {/* Curved Screen Element */}
-        <div className="relative w-full max-w-xl mx-auto mb-16 text-center">
-          <div className="w-full h-3 rounded-full bg-gradient-to-r from-transparent via-rose-500 to-transparent shadow-[0_15px_30px_-5px_rgba(225,29,72,0.4)]" />
-          <p className="text-[11px] font-bold tracking-widest text-slate-500 uppercase mt-4">
-            SCREEN THIS WAY
-          </p>
-        </div>
-
-        {/* Seat Grid By Tier */}
-        <div className="space-y-8">
-          {sortedRows.map(({ row, tier, price, seats }) => (
-            <div key={row} className="flex flex-col items-center">
-              {/* Tier & Price Label */}
-              <div className="w-full flex items-center justify-between text-xs text-slate-400 font-semibold pb-2 border-b border-[#242938]/60 mb-3 px-4">
-                <span className="text-white tracking-wide">
-                  Row {row} — <span className="text-rose-400 font-bold">{tier}</span>
-                </span>
-                <span className="text-slate-300">₹{price}</span>
-              </div>
-
-              {/* Seats Row */}
-              <div className="flex items-center justify-center space-x-2 sm:space-x-3 overflow-x-auto w-full py-1">
-                <span className="w-6 text-center text-xs font-bold text-slate-500">{row}</span>
-
-                {seats
-                  .sort((a, b) => a.number - b.number)
-                  .map((seat) => {
-                    const isSelected = selectedSeatIds.includes(seat.seatId);
-                    const isAvailable = seat.status === 'AVAILABLE';
-                    const isLocked = seat.status === 'LOCKED';
-                    const isBooked = seat.status === 'BOOKED';
-
-                    let seatClasses = 'bg-[#0c0e14] border border-[#374151] text-slate-300 hover:border-emerald-400 hover:scale-110';
-                    if (isSelected) {
-                      seatClasses = 'bg-emerald-500 border-emerald-400 text-white font-bold shadow-lg shadow-emerald-900/50 scale-105';
-                    } else if (isLocked) {
-                      seatClasses = 'bg-amber-500/20 border-amber-500/50 text-amber-400 cursor-not-allowed';
-                    } else if (isBooked) {
-                      seatClasses = 'bg-rose-950/40 border-rose-900/50 text-slate-600 cursor-not-allowed';
-                    }
-
-                    return (
-                      <button
-                        key={seat.id}
-                        disabled={!isAvailable}
-                        onClick={() => toggleSeatSelection(seat)}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-[11px] font-semibold transition-all ${seatClasses}`}
-                        title={`Seat ${row}${seat.number} (${tier} - ₹${price})`}
-                      >
-                        {seat.number}
-                      </button>
-                    );
-                  })}
-
-                <span className="w-6 text-center text-xs font-bold text-slate-500">{row}</span>
-              </div>
+          {/* Seat Legend */}
+          <div className="mt-10 pt-6 border-t border-[#F0F0F0] flex flex-wrap items-center justify-center gap-6 text-xs text-[#555555]">
+            <div className="flex items-center space-x-2">
+              <div className="w-5 h-5 rounded-sm bg-white border border-[#1EA83C]" />
+              <span>Available</span>
             </div>
-          ))}
+            <div className="flex items-center space-x-2">
+              <div className="w-5 h-5 rounded-sm bg-[#1EA83C] border border-[#1EA83C]" />
+              <span className="font-semibold text-[#222222]">Selected</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-5 h-5 rounded-sm bg-[#EEEEEE] border border-[#DDDDDD]" />
+              <span>Sold</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-5 h-5 rounded-sm bg-white border border-[#8B5CF6]" />
+              <span>Premium (Recliner)</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* Floating Bottom Checkout Bar */}
+      {/* 3. Bottom Sticky Checkout Bar (BookMyShow Standard) */}
       {selectedSeatIds.length > 0 && (
-        <div className="fixed bottom-0 inset-x-0 bg-[#161922]/95 backdrop-blur-md border-t border-[#242938] py-4 z-40 animate-slide-up shadow-2xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#E5E5E5] py-3.5 z-40 shadow-bms-dropdown animate-fade-in">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div>
-              <p className="text-xs text-slate-400">
-                Selected {selectedSeatIds.length} {selectedSeatIds.length === 1 ? 'Seat' : 'Seats'}
+              <p className="text-xs text-[#666666]">
+                Seats: <span className="font-bold text-[#222222]">{selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')}</span>
               </p>
-              <div className="flex items-baseline space-x-2">
-                <span className="text-2xl font-black text-white">₹{subtotal.toFixed(2)}</span>
-                <span className="text-xs text-slate-400">
-                  ({selectedSeats.map((s) => `${s.row}${s.number}`).join(', ')})
-                </span>
-              </div>
+              <p className="text-lg font-black text-[#222222]">
+                Rs. {subtotal.toFixed(2)}
+              </p>
             </div>
 
             <button
               onClick={handleProceedToReserve}
               disabled={reserving}
-              className="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl text-sm transition shadow-lg shadow-rose-900/40 flex items-center justify-center space-x-2 disabled:opacity-50"
+              className="px-8 py-2.5 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition shadow-sm disabled:opacity-50 flex items-center space-x-2"
             >
-              <span>{reserving ? 'Locking Seats...' : 'Proceed to Checkout'}</span>
+              <span>{reserving ? 'Reserving...' : `Pay Rs. ${subtotal.toFixed(2)}`}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       )}
+
     </div>
   );
 }

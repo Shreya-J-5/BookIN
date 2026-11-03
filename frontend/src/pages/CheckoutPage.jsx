@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { graphqlRequest } from '../services/graphqlClient';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Clock, ShieldCheck, Ticket, Tag, CreditCard, AlertCircle, CheckCircle2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  Clock,
+  ShieldCheck,
+  Tag,
+  CreditCard,
+  AlertCircle,
+  CheckCircle2,
+  Ticket
+} from 'lucide-react';
 
 export default function CheckoutPage() {
   const { reservationId } = useParams();
@@ -19,20 +28,19 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState('');
 
   const [paymentOrder, setPaymentOrder] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 mins in seconds
+  const [timeLeft, setTimeLeft] = useState(600); // 10 mins
   const [loading, setLoading] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // 10-Minute Countdown Timer
+  // 10-Minute Countdown
   useEffect(() => {
     if (!reservation?.expiresAt) return;
 
     const calculateRemaining = () => {
       const expiry = new Date(reservation.expiresAt).getTime();
       const now = new Date().getTime();
-      const diffSeconds = Math.max(0, Math.floor((expiry - now) / 1000));
-      return diffSeconds;
+      return Math.max(0, Math.floor((expiry - now) / 1000));
     };
 
     setTimeLeft(calculateRemaining());
@@ -42,7 +50,7 @@ export default function CheckoutPage() {
       setTimeLeft(remaining);
       if (remaining <= 0) {
         clearInterval(timer);
-        alert('Your 10-minute reservation has expired. The seats have been released.');
+        alert('Your 10-minute seat reservation has expired. Please select your seats again.');
         navigate('/');
       }
     }, 1000);
@@ -50,7 +58,6 @@ export default function CheckoutPage() {
     return () => clearInterval(timer);
   }, [reservation, navigate]);
 
-  // Create or update payment order
   const initPaymentOrder = async (code = null) => {
     setErrorMsg('');
     try {
@@ -100,13 +107,11 @@ export default function CheckoutPage() {
     initPaymentOrder(couponCode.trim());
   };
 
-  // Payment Execution & Verification
   const handlePayment = async () => {
     if (!paymentOrder) return;
     setProcessingPayment(true);
     setErrorMsg('');
 
-    // Check if live Razorpay SDK is available
     if (window.Razorpay && !paymentOrder.keyId.startsWith('rzp_test_bookin_mock')) {
       const options = {
         key: paymentOrder.keyId,
@@ -116,12 +121,12 @@ export default function CheckoutPage() {
         description: `Booking for ${show?.movie?.title || 'Movie'}`,
         order_id: paymentOrder.orderId,
         prefill: {
-          name: user?.fullName || 'Movie Enthusiast',
+          name: user?.fullName || 'Customer',
           email: user?.email || 'customer@bookin.com',
           contact: user?.phone || '9876543210'
         },
         theme: {
-          color: '#e11d48'
+          color: '#F84464'
         },
         handler: async function (response) {
           await verifyAndFinalize(
@@ -140,11 +145,9 @@ export default function CheckoutPage() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } else {
-      // Mock Sandbox Simulator for test credentials
-      // Simulate real HMAC signature verification flow
+      // Sandbox Simulator fallback for test credentials
       const mockPaymentId = `pay_${Date.now()}`;
       const mockSignature = `mock_sig_${Date.now()}`;
-
       await verifyAndFinalize(paymentOrder.orderId, mockPaymentId, mockSignature);
     }
   };
@@ -202,81 +205,78 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-32 text-center text-slate-400">
-        <div className="animate-spin w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-sm font-medium">Securing checkout gateway...</p>
+      <div className="min-h-screen py-32 text-center text-[#888888] bg-[#F5F5F5]">
+        <div className="w-8 h-8 border-2 border-[#F84464] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs font-medium">Securing payment order...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-24 pt-8">
+    <div className="bg-[#F5F5F5] min-h-screen pb-24 pt-6">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Link */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center space-x-1.5 text-xs text-slate-400 hover:text-white transition mb-6"
+          className="flex items-center space-x-1 text-xs text-[#666666] hover:text-[#222222] transition mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Change Seats</span>
         </button>
 
-        {/* 10-Minute Lock Timer Banner */}
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
-              <Clock className="w-5 h-5 animate-pulse" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-white">Seats Temporarily Reserved</h3>
-              <p className="text-xs text-slate-400">Complete payment before timer expires to guarantee your booking.</p>
-            </div>
+        {/* 10-Minute Lock Timer Bar */}
+        <div className="bg-[#FFF8E6] border border-[#FFE8A3] rounded-lg p-3 mb-6 flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <Clock className="w-4 h-4 text-amber-600 animate-pulse flex-shrink-0" />
+            <p className="text-xs text-[#665200]">
+              Seats locked for you. Complete payment before the timer expires.
+            </p>
           </div>
-
-          <div className="text-center sm:text-right px-4 py-2 bg-[#0c0e14] rounded-xl border border-amber-500/30">
-            <span className="text-lg font-black text-amber-400 font-mono tracking-widest">{timeFormatted}</span>
-            <span className="block text-[10px] text-slate-500 uppercase font-semibold">Remaining</span>
-          </div>
+          <span className="font-mono font-bold text-xs text-amber-800 bg-white px-2 py-0.5 rounded border border-[#FFE8A3]">
+            {timeFormatted}
+          </span>
         </div>
 
         {errorMsg && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center space-x-2">
+          <div className="mb-6 p-3 bg-[#FFF1F3] border border-[#F84464]/30 rounded text-[#F84464] text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Left 2 Cols: Order Summary & Coupon */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="md:col-span-2 space-y-4">
             
-            {/* Booking Details Card */}
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 space-y-4">
-              <h2 className="text-lg font-bold text-white flex items-center space-x-2 pb-3 border-b border-[#242938]">
-                <Ticket className="w-5 h-5 text-rose-500" />
-                <span>Ticket Details</span>
+            {/* Ticket Summary Box */}
+            <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3">
+              <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#F0F0F0] flex items-center space-x-1.5">
+                <Ticket className="w-4 h-4 text-[#F84464]" />
+                <span>Ticket Summary</span>
               </h2>
 
-              <div className="space-y-1.5">
-                <h3 className="text-xl font-black text-white">{show?.movie?.title || 'Movie Experience'}</h3>
-                <p className="text-xs text-slate-400">
-                  {show?.screen?.theatre?.name} • {show?.screen?.name}
+              <div>
+                <h3 className="text-base font-bold text-[#222222]">
+                  {show?.movie?.title || 'Selected Movie'}
+                </h3>
+                <p className="text-xs text-[#666666] mt-0.5">
+                  {show?.screen?.theatre?.name} • {show?.screen?.name} ({show?.screen?.screenType})
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#666666]">
                   {show?.startTime ? new Date(show.startTime).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : 'Today'}
                 </p>
               </div>
 
-              {/* Reserved Seat Badges */}
-              <div className="pt-3 border-t border-[#242938]">
-                <span className="text-xs text-slate-400 font-medium">Reserved Seats:</span>
-                <div className="flex flex-wrap gap-2 mt-2">
+              {/* Reserved Seats List */}
+              <div className="pt-2 border-t border-[#F0F0F0]">
+                <span className="text-xs text-[#777777]">Selected Seats:</span>
+                <div className="flex flex-wrap gap-1.5 mt-1">
                   {reservation?.seatLabels?.map((label) => (
                     <span
                       key={label}
-                      className="px-3 py-1 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-400 font-bold text-xs"
+                      className="px-2 py-0.5 rounded bg-[#F5F5F5] border border-[#E5E5E5] text-[#222222] font-bold text-xs"
                     >
                       {label}
                     </span>
@@ -285,11 +285,11 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Coupon Code Section */}
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 space-y-3">
-              <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-                <Tag className="w-4 h-4 text-emerald-400" />
-                <span>Offers & Coupons</span>
+            {/* Offers & Coupons Box */}
+            <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3">
+              <h3 className="text-xs font-bold text-[#222222] uppercase tracking-wider flex items-center space-x-1.5">
+                <Tag className="w-4 h-4 text-[#1EA83C]" />
+                <span>Offers & Promo Codes</span>
               </h3>
 
               <form onSubmit={handleApplyCoupon} className="flex gap-2">
@@ -297,65 +297,65 @@ export default function CheckoutPage() {
                   type="text"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  placeholder="Enter code (e.g. WELCOME100, BOOKIN50)"
-                  className="flex-1 px-4 py-2 bg-[#0c0e14] border border-[#242938] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 uppercase font-mono"
+                  placeholder="Enter Promo Code (e.g. WELCOME100, BOOKIN50)"
+                  className="flex-1 px-3 py-1.5 bg-white border border-[#E5E5E5] rounded text-xs text-[#222222] placeholder-[#888888] focus:outline-none focus:border-[#F84464] font-mono"
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#242938] hover:bg-slate-700 text-white font-semibold rounded-xl text-xs transition"
+                  className="px-4 py-1.5 bg-[#222222] hover:bg-[#333333] text-white text-xs font-bold rounded transition"
                 >
                   Apply
                 </button>
               </form>
 
               {appliedCoupon && (
-                <div className="flex items-center space-x-2 text-xs text-emerald-400 font-medium">
+                <div className="flex items-center space-x-1.5 text-xs text-[#1EA83C] font-medium">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Coupon '{appliedCoupon}' applied successfully! Saved ₹{discountAmount}</span>
+                  <span>Promo '{appliedCoupon}' applied: Saved Rs. {discountAmount.toFixed(2)}</span>
                 </div>
               )}
 
               {couponError && (
-                <p className="text-xs text-rose-400 font-medium">{couponError}</p>
+                <p className="text-xs text-[#F84464]">{couponError}</p>
               )}
             </div>
 
           </div>
 
-          {/* Right Col: Price Breakdown & Payment CTA */}
-          <div className="space-y-6">
-            <div className="bg-[#161922] border border-[#242938] rounded-2xl p-6 space-y-4">
-              <h3 className="text-base font-bold text-white pb-3 border-b border-[#242938]">
+          {/* Right 1 Col: Booking Summary & Payment CTA */}
+          <div>
+            <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 shadow-bms space-y-3 sticky top-28">
+              <h3 className="text-xs font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#F0F0F0]">
                 Payment Breakdown
               </h3>
 
-              <div className="space-y-2.5 text-xs">
-                <div className="flex justify-between text-slate-300">
-                  <span>Ticket Subtotal</span>
-                  <span className="font-semibold text-white">₹{paymentOrder?.subtotal?.toFixed(2)}</span>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between text-[#555555]">
+                  <span>Ticket Price</span>
+                  <span className="font-semibold text-[#222222]">Rs. {paymentOrder?.subtotal?.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between text-slate-400">
-                  <span>Convenience Fee</span>
-                  <span>₹{paymentOrder?.convenienceFee?.toFixed(2)}</span>
+                <div className="flex justify-between text-[#666666]">
+                  <span>Convenience Fees</span>
+                  <span>Rs. {paymentOrder?.convenienceFee?.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-[#666666]">
                   <span>Integrated GST (18%)</span>
-                  <span>₹{paymentOrder?.taxAmount?.toFixed(2)}</span>
+                  <span>Rs. {paymentOrder?.taxAmount?.toFixed(2)}</span>
                 </div>
 
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-400 font-semibold">
-                    <span>Discount</span>
-                    <span>-₹{discountAmount.toFixed(2)}</span>
+                  <div className="flex justify-between text-[#1EA83C] font-semibold">
+                    <span>Promo Discount</span>
+                    <span>-Rs. {discountAmount.toFixed(2)}</span>
                   </div>
                 )}
 
-                <div className="pt-3 border-t border-[#242938] flex justify-between items-baseline text-sm font-bold text-white">
-                  <span>Total Amount</span>
-                  <span className="text-xl font-black text-rose-500">
-                    ₹{paymentOrder?.amount?.toFixed(2)}
+                <div className="pt-2 border-t border-[#E5E5E5] flex justify-between items-baseline font-bold text-[#222222]">
+                  <span className="text-sm">Amount Payable</span>
+                  <span className="text-lg text-[#F84464] font-black">
+                    Rs. {paymentOrder?.amount?.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -364,19 +364,19 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePayment}
                 disabled={processingPayment}
-                className="w-full py-4 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl text-sm transition shadow-lg shadow-rose-900/40 flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full py-3 bg-[#F84464] hover:bg-[#E03756] text-white font-bold rounded text-xs transition shadow-sm disabled:opacity-50 mt-2 flex items-center justify-center space-x-2"
               >
                 <CreditCard className="w-4 h-4" />
                 <span>
                   {processingPayment
-                    ? 'Processing Payment...'
-                    : `Pay ₹${paymentOrder?.amount?.toFixed(2)} via Razorpay`}
+                    ? 'Processing...'
+                    : `Proceed to Pay Rs. ${paymentOrder?.amount?.toFixed(2)}`}
                 </span>
               </button>
 
-              <div className="flex items-center justify-center space-x-2 text-[11px] text-slate-500 pt-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>256-Bit Encrypted Razorpay Checkout</span>
+              <div className="flex items-center justify-center space-x-1.5 text-[10px] text-[#888888] pt-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#1EA83C]" />
+                <span>Safe and Secure Payments via Razorpay</span>
               </div>
             </div>
           </div>
